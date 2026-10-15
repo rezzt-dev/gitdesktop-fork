@@ -93,6 +93,7 @@ export function useCommitSubmit(
   const canCommit =
     title.trim().length > 0 &&
     (stagedCount > 0 || amending) &&
+    status.data !== undefined &&
     !commit.isPending &&
     !locked &&
     !rulesSettling;
@@ -102,6 +103,10 @@ export function useCommitSubmit(
   // the empty stage.
   const commitDisabledReason = ((): string | null => {
     switch (true) {
+      case status.data === undefined && status.errorUpdateCount > 0:
+        return "Could not read repository changes — retry in Changes";
+      case status.data === undefined:
+        return "Loading repository changes…";
       case rulesSettling:
         return "Checking branch protection rules…";
       case locked:
@@ -109,7 +114,7 @@ export function useCommitSubmit(
       case title.trim().length === 0:
         return "Enter a commit title first";
       case stagedCount === 0 && !amending:
-        return "Stage changes to commit";
+        return "Stage files in Changes to include them in the commit";
       default:
         return null;
     }
@@ -142,7 +147,7 @@ export function useCommitSubmit(
     // Belt for a gate that flipped under an open surface: `canCommit` disables
     // the button and hotkey, but the rules can settle to "locked" between the
     // render that enabled them and the click.
-    if (rulesSettling || locked) return;
+    if (!canCommit || generating) return;
     const commitTitle = title.trim();
     // Trailers must be the final paragraph of the message.
     const fullBody = [body.trim(), coAuthorTrailers(coAuthors)]

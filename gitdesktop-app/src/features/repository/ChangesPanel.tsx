@@ -1,11 +1,13 @@
 import { Popover } from "@base-ui/react/popover";
 import {
+  ArrowClockwiseIcon,
   CaretDownIcon,
   CaretRightIcon,
   FunnelIcon,
   InfoIcon,
   StackIcon,
   TreeViewIcon,
+  WarningCircleIcon,
 } from "@phosphor-icons/react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
@@ -386,7 +388,7 @@ export function ChangesPanel({
   const branch = status.data?.branch;
   const currentName = branch?.name ?? null;
   const defaultName = defaultBranch.data ?? null;
-  const treeClean = !status.isPending && entries.length === 0;
+  const treeClean = status.data !== undefined && entries.length === 0;
   // An unborn HEAD (no commits yet, oid null) is a brand-new repo — the empty
   // Changes view becomes "make your first commit" guidance instead of the
   // caught-up actions, which assume there's history to act on.
@@ -1361,6 +1363,34 @@ export function ChangesPanel({
     },
     canResolveConflicts,
   );
+
+  if (status.data === undefined && status.errorUpdateCount > 0) {
+    return (
+      <div
+        role="alert"
+        className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center"
+      >
+        <WarningCircleIcon className="size-7 text-destructive" />
+        <div>
+          <p className="text-sm font-medium">
+            Could not load repository changes
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Check that this repository is accessible, then try again.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={status.isFetching}
+          onClick={() => void status.refetch()}
+        >
+          <ArrowClockwiseIcon data-icon="inline-start" />
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   if (status.isPending) {
     return (

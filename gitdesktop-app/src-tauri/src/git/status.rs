@@ -54,8 +54,9 @@ fn change_kind(c: char) -> Option<ChangeKind> {
 }
 
 /// Parses `git status --porcelain=v2 --branch -z` output.
-/// With -z, records are NUL-separated; a rename/copy record (`2 ...`) is
-/// followed by an extra NUL-separated token holding the original path.
+/// With -z, file records are NUL-separated, but branch headers remain newline-
+/// separated. A rename/copy record (`2 ...`) is followed by an extra NUL-
+/// separated token holding the original path.
 pub fn parse_status_v2(text: &str) -> RepoStatus {
     let mut branch = BranchHead {
         name: None,
@@ -81,12 +82,17 @@ pub fn parse_status_v2(text: &str) -> RepoStatus {
     // porcelain output cannot suppress `branch.ab` and fake a gone upstream.
     let mut saw_ab = false;
 
-    let mut tokens = text.split('\0').peekable();
-    while let Some(token) = tokens.next() {
+    let mut tokens = text.split('\0');
+    while let Some(mut token) = tokens.next() {
         if token.is_empty() {
             continue;
         }
-        if let Some(header) = token.strip_prefix("# ") {
+        // Git keeps headers newline-delimited even with -z. The first NUL token
+        // therefore contains every header AND the first file record. Consume
+        // only the header lines, leaving that record intact (including any
+        // newline that belongs to its path).
+        while let Some(header) = token.strip_prefix("# ") {
+            let (header, rest) = header.split_once('\n').unwrap_or((header, ""));
             if let Some(oid) = header.strip_prefix("branch.oid ") {
                 branch.oid = (oid != "(initial)").then(|| oid.to_string());
             } else if let Some(head) = header.strip_prefix("branch.head ") {
@@ -107,6 +113,10 @@ pub fn parse_status_v2(text: &str) -> RepoStatus {
                     }
                 }
             }
+            token = rest;
+        }
+
+        if token.is_empty() {
             continue;
         }
 
@@ -184,6 +194,46 @@ mod tests {
 
     fn z(parts: &[&str]) -> String {
         parts.join("\0")
+    }
+
+    #[test]
+    fn parses_real_z_output_without_losing_first_staged_file() {
+        // In Git's actual -z output the headers end in LF, while only file
+        // records end in NUL. Earlier fixtures used NUL for both and missed
+        // the first file; a single staged file then disabled Commit forever.
+        let text = concat!(
+            "# branch.oid abc123\n",
+            "# branch.head main\n",
+            "# branch.upstream origin/main\n",
+            "# branch.ab +1 -0\n",
+            "1 A. N... 000000 100644 100644 0000000 e69de29 first file.txt\0",
+        );
+        let s = parse_status_v2(text);
+        assert_eq!(s.branch.name.as_deref(), Some("main"));
+        assert_eq!(s.branch.oid.as_deref(), Some("abc123"));
+        assert_eq!(s.branch.upstream.as_deref(), Some("origin/main"));
+        assert_eq!(s.branch.ahead, 1);
+        assert!(!s.branch.upstream_gone);
+        assert_eq!(s.entries.len(), 1);
+        assert_eq!(s.entries[0].path, "first file.txt");
+        assert_eq!(s.entries[0].staged, Some(ChangeKind::Added));
+    }
+
+    #[test]
+    fn parses_first_rename_and_newline_in_path() {
+        let text = concat!(
+            "# branch.oid (initial)\n",
+            "# branch.head topic\n",
+            "2 R. N... 100644 100644 100644 e69de29 e69de29 R100 new\nname.txt\0",
+            "old\nname.txt\0",
+        );
+        let s = parse_status_v2(text);
+        assert_eq!(s.branch.oid, None);
+        assert_eq!(s.branch.name.as_deref(), Some("topic"));
+        assert_eq!(s.entries.len(), 1);
+        assert_eq!(s.entries[0].path, "new\nname.txt");
+        assert_eq!(s.entries[0].orig_path.as_deref(), Some("old\nname.txt"));
+        assert_eq!(s.entries[0].staged, Some(ChangeKind::Renamed));
     }
 
     #[test]

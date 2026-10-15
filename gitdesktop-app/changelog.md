@@ -32,6 +32,11 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 
 - reorganize the fork so the application source, tooling, dependencies and technical documentation live under `gitdesktop-app/`, while repository documentation and github automation remain at the root; keep upstream references outside the operational project tree.
 
+### FIXED
+
+- commit actions now parse Git's real `status --porcelain=v2 -z` output correctly, preserving the branch metadata and first changed or staged file so the commit button enables when the repository is ready.
+- repository change-read failures now show a clear retry action instead of presenting the repository as clean, and commit controls explain when repository status is still loading or unavailable.
+
 ## [0.13.5] - 2026-10-15
 
 ### Changed
