@@ -45,6 +45,7 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 - commit actions now parse Git's real `status --porcelain=v2 -z` output correctly, preserving the branch metadata and first changed or staged file so the commit button enables when the repository is ready.
 - repository change-read failures now show a clear retry action instead of presenting the repository as clean, and commit controls explain when repository status is still loading or unavailable.
 - closing the window now quits GitDesktop completely instead of leaving it running in the system tray; when offline changes are waiting to send, the app asks for confirmation before exiting.
+- allow the interface zoom selector to apply and persist changes immediately, keep the selected value when saving other settings, and fall back to browser zoom when the native command is unavailable.
 
 ### REMOVED
 

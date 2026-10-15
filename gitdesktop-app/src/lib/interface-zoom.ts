@@ -5,9 +5,15 @@ import type { InterfaceZoom } from "@/lib/settings/api";
 /** Browser zoom reflows and rerasterizes text; CSS transforms would blur it. */
 export async function setInterfaceZoom(zoom: InterfaceZoom): Promise<void> {
   if (isTauri()) {
-    await getCurrentWebview().setZoom(zoom / 100);
-  } else {
-    // Keep the Vite preview usable outside Tauri.
-    document.documentElement.style.zoom = `${zoom}%`;
+    try {
+      await getCurrentWebview().setZoom(zoom / 100);
+      document.documentElement.style.zoom = "";
+      return;
+    } catch {
+      // Keep zoom usable when the native command is unavailable (for example,
+      // a dev window launched before the zoom capability was added).
+    }
   }
+  // CSS zoom also reflows text, and works in the browser preview.
+  document.documentElement.style.zoom = `${zoom}%`;
 }

@@ -1,0 +1,1 @@
+- corregir el selector de zoom para aplicar y guardar los cambios al instante, conservar el valor al guardar otros ajustes y permitir el zoom cuando el comando nativo no está disponible.

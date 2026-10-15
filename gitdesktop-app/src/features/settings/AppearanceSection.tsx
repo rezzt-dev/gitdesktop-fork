@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useId, useRef } from "react";
 import { toast } from "sonner";
 import {
   Select,
@@ -7,9 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { setInterfaceZoom } from "@/lib/interface-zoom";
-import { INTERFACE_ZOOM_LEVELS, type InterfaceZoom } from "@/lib/settings/api";
 import {
+  type AppSettings,
+  INTERFACE_ZOOM_LEVELS,
+  type InterfaceZoom,
+} from "@/lib/settings/api";
+import {
+  settingsKeys,
   useApplyTheme,
   useSaveSettings,
   useSettings,
@@ -17,14 +22,15 @@ import {
 import { THEME_LABELS, THEME_ORDER, type ThemeSetting } from "@/lib/theme";
 
 /**
- * Settings → Appearance. The theme picker is an apply-on-change preference owned
- * by this control (not the bulk Save bar), mirroring `diffViewMode`: it persists
- * and applies the class immediately, so picking a theme previews it live.
+ * Settings → Appearance. Theme and zoom apply on change and persist independently
+ * of the bulk Save bar. Their cached values also drive the live app appearance.
  */
 export function AppearanceSection() {
   const settings = useSettings();
   const applyTheme = useApplyTheme();
   const saveSettings = useSaveSettings();
+  const queryClient = useQueryClient();
+  const zoomSaving = useRef(false);
   const labelId = useId();
   const zoomLabelId = useId();
   const theme = settings.data?.theme ?? "system";
@@ -36,14 +42,29 @@ export function AppearanceSection() {
 
   async function selectZoom(next: InterfaceZoom) {
     const current = settings.data;
-    if (!current || current.interfaceZoom === next || saveSettings.isPending)
+    if (
+      !current ||
+      !INTERFACE_ZOOM_LEVELS.includes(next) ||
+      current.interfaceZoom === next ||
+      zoomSaving.current
+    )
       return;
+    zoomSaving.current = true;
+    // App applies the cached value immediately, independently of disk writes.
+    await queryClient.cancelQueries({ queryKey: settingsKeys.settings });
+    const updated = { ...current, interfaceZoom: next };
+    queryClient.setQueryData(settingsKeys.settings, updated);
     try {
-      await setInterfaceZoom(next);
-      await saveSettings.mutateAsync({ ...current, interfaceZoom: next });
+      await saveSettings.mutateAsync(updated);
     } catch {
-      void setInterfaceZoom(current.interfaceZoom).catch(() => undefined);
+      queryClient.setQueryData<AppSettings>(settingsKeys.settings, (latest) =>
+        latest?.interfaceZoom === next
+          ? { ...latest, interfaceZoom: current.interfaceZoom }
+          : latest,
+      );
       toast.error("Could not save interface zoom");
+    } finally {
+      zoomSaving.current = false;
     }
   }
 
