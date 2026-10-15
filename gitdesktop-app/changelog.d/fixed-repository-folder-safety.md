@@ -1,0 +1,1 @@
+- Keep repository-folder imports current at confirmation time and reject creating or moving organizational folders inside a Git repository, so the folder tree stays aligned with the filesystem.

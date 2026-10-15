@@ -123,6 +123,20 @@ fn child_name(name: &str) -> AppResult<()> {
     Ok(())
 }
 
+fn inside_repository(path: &Path) -> bool {
+    path.ancestors().any(|ancestor| ancestor.join(".git").exists())
+}
+
+fn organizational_parent(path: &str) -> AppResult<PathBuf> {
+    let parent = directory(path)?;
+    if inside_repository(&parent) {
+        return Err(AppError::InvalidArgument(
+            "Choose a folder outside a repository working directory.".into(),
+        ));
+    }
+    Ok(parent)
+}
+
 // The destination must never be replaced, including an empty directory created
 // by another process between validation and the move.
 #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -190,7 +204,7 @@ pub async fn repository_folder_create(parent: String, name: String) -> AppResult
     let _guard = FOLDER_WRITES.lock().await;
     tauri::async_runtime::spawn_blocking(move || {
         child_name(&name)?;
-        let target = directory(&parent)?.join(name);
+        let target = organizational_parent(&parent)?.join(name);
         std::fs::create_dir(&target)?;
         Ok(target.to_string_lossy().into_owned())
     })
@@ -220,15 +234,10 @@ pub async fn repository_folder_move(
     let _guard = FOLDER_WRITES.lock().await;
     child_name(&name)?;
     let source = directory(&path)?;
-    if source.parent().is_none()
-        || source
-            .ancestors()
-            .skip(1)
-            .any(|ancestor| ancestor.join(".git").exists())
-    {
+    if source.parent().map_or(true, inside_repository) {
         return Err(AppError::InvalidArgument("Choose an organizational folder or repository root, not a filesystem root or a folder inside a repository.".into()));
     }
-    let destination = directory(&parent)?.join(name);
+    let destination = organizational_parent(&parent)?.join(name);
     if destination.starts_with(&source) || destination.symlink_metadata().is_ok() {
         return Err(AppError::InvalidArgument(
             "The destination already exists or is inside the source folder.".into(),
@@ -369,5 +378,15 @@ mod tests {
             std::fs::read_to_string(temp.path().join(".hidden")).unwrap(),
             "keep"
         );
+    }
+    #[test]
+    fn organizational_parent_rejects_repository_and_its_descendants() {
+        let temp = tempfile::tempdir().unwrap();
+        let repo = temp.path().join("repo");
+        std::fs::create_dir_all(repo.join(".git")).unwrap();
+        std::fs::create_dir(repo.join("nested")).unwrap();
+        assert!(organizational_parent(repo.to_str().unwrap()).is_err());
+        assert!(organizational_parent(repo.join("nested").to_str().unwrap()).is_err());
+        assert!(organizational_parent(temp.path().to_str().unwrap()).is_ok());
     }
 }

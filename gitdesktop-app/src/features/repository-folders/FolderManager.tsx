@@ -112,8 +112,13 @@ function ManagerContent({ onClose }: { onClose: () => void }) {
     const scan = preview;
     if (!scan) return;
     await run(async () => {
-      await importRecentRepos(scan.entries.filter((entry) => entry.repository));
-      await addLibraryRoot(scan.root);
+      // The preview can be open while repositories are added or removed on disk.
+      // Import the current contents, then let the library query scan them again.
+      const current = await scanFolder(scan.root);
+      await importRecentRepos(
+        current.entries.filter((entry) => entry.repository),
+      );
+      await addLibraryRoot(current.root);
       await refresh();
       setPreview(null);
       toast.success(
@@ -249,7 +254,9 @@ function ManagerContent({ onClose }: { onClose: () => void }) {
               disabled={busy || preview.entries.length === 0}
               onClick={() => void importFolder()}
             >
-              Import {repositories.length} repositories
+              {repositories.length
+                ? `Import ${repositories.length} repositories`
+                : "Import folder"}
             </Button>
             <Button
               size="sm"
