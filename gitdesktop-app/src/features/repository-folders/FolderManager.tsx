@@ -13,6 +13,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { usePlanStore } from "@/features/plan/store";
+import { useBatchSync } from "@/features/repository/batch-sync-store";
 import { useOpenRepoByPath } from "@/features/repository/useOpenRepoByPath";
 import { useResearchStore } from "@/features/research/store";
 import { CloneRepoDialog } from "@/features/welcome/CloneRepoDialog";
@@ -72,6 +73,7 @@ function ManagerContent({ onClose }: { onClose: () => void }) {
   const client = useQueryClient();
   const openRepo = useOpenRepoByPath();
   const library = useFolderLibrary();
+  const showBatch = useBatchSync((state) => state.show);
   const [selected, setSelected] = useState<FolderEntry | null>(null);
   const [preview, setPreview] = useState<FolderScan | null>(null);
   const [busy, setBusy] = useState(false);
@@ -130,7 +132,8 @@ function ManagerContent({ onClose }: { onClose: () => void }) {
     const active = useUiStore.getState().repoPath;
     if (
       (active && containsFolder(target.path, active)) ||
-      client.isMutating() > 0
+      client.isMutating() > 0 ||
+      useBatchSync.getState().running
     ) {
       throw new Error(
         "Close repositories inside this folder and wait for running operations before moving it.",
@@ -148,7 +151,8 @@ function ManagerContent({ onClose }: { onClose: () => void }) {
     const current = useUiStore.getState().repoPath;
     if (
       (current && containsFolder(target.path, current)) ||
-      client.isMutating() > 0
+      client.isMutating() > 0 ||
+      useBatchSync.getState().running
     )
       throw new Error(
         "A repository became active. Close it before moving the folder.",
@@ -329,6 +333,36 @@ function ManagerContent({ onClose }: { onClose: () => void }) {
                   onClick={() => setCloneOpen(true)}
                 >
                   Clone here…
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => {
+                    onClose();
+                    showBatch({
+                      mode: "fetch",
+                      folder: selected.path,
+                      folderName: selected.name,
+                    });
+                  }}
+                >
+                  Fetch repositories…
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => {
+                    onClose();
+                    showBatch({
+                      mode: "pull",
+                      folder: selected.path,
+                      folderName: selected.name,
+                    });
+                  }}
+                >
+                  Pull repositories…
                 </Button>
               </>
             )}

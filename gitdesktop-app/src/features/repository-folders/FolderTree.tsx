@@ -13,6 +13,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
+import { useBatchSync } from "@/features/repository/batch-sync-store";
 import { useOpenRepoByPath } from "@/features/repository/useOpenRepoByPath";
 import { copyText } from "@/lib/clipboard";
 import { suppressContextMenu } from "@/lib/context-menu";
@@ -40,6 +41,7 @@ export function FolderTree({
   const [opening, setOpening] = useState(false);
   const [menuEntry, setMenuEntry] = useState<FolderEntry | null>(null);
   const openRepo = useOpenRepoByPath();
+  const showBatch = useBatchSync((state) => state.show);
   const id = useId();
   const rows = folderRows(
     library.data?.entries ?? [],
@@ -240,6 +242,32 @@ export function FolderTree({
               >
                 Show in file manager
               </ContextMenuItem>
+              {!menuEntry.repository && !onSelect && (
+                <>
+                  <ContextMenuItem
+                    onClick={() =>
+                      showBatch({
+                        mode: "fetch",
+                        folder: menuEntry.path,
+                        folderName: menuEntry.name,
+                      })
+                    }
+                  >
+                    Fetch repositories in folder…
+                  </ContextMenuItem>
+                  <ContextMenuItem
+                    onClick={() =>
+                      showBatch({
+                        mode: "pull",
+                        folder: menuEntry.path,
+                        folderName: menuEntry.name,
+                      })
+                    }
+                  >
+                    Pull repositories in folder…
+                  </ContextMenuItem>
+                </>
+              )}
               <ContextMenuItem
                 onClick={() =>
                   void copyText(menuEntry.path, "Folder path copied")

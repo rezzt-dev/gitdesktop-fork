@@ -14,6 +14,7 @@ import { ExploreScreen } from "@/features/explore/ExploreScreen";
 import { HelpScreen } from "@/features/help/HelpScreen";
 import { MyWorkScreen } from "@/features/mywork/MyWorkScreen";
 import { RepoNotificationsDialogHost } from "@/features/notifications/RepoNotificationsDialog";
+import { BatchSyncDialog } from "@/features/repository/BatchSyncDialog";
 import { RepositoryView } from "@/features/repository/RepositoryView";
 import { usePickAndOpenRepo } from "@/features/repository/useOpenRepoByPath";
 import { FolderManager } from "@/features/repository-folders/FolderManager";
@@ -331,6 +332,7 @@ function App() {
       <AutomationHistoryDialogHost />
       <RepoNotificationsDialogHost />
       <FolderManager open={foldersOpen} onOpenChange={setFoldersOpen} />
+      <BatchSyncDialog />
       <CloneRepoDialog open={cloneOpen} onOpenChange={setCloneOpen} />
       <CreateRepoDialog open={createOpen} onOpenChange={setCreateOpen} />
       <ConfirmDialogHost />

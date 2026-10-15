@@ -1,4 +1,6 @@
 import {
+  ArrowDownIcon,
+  ArrowsClockwiseIcon,
   BuildingsIcon,
   CloudIcon,
   FolderIcon,
@@ -49,6 +51,7 @@ import {
 } from "@/lib/settings/queries";
 import { toastError } from "@/lib/toast";
 import { cn } from "@/lib/utils";
+import { useBatchSync } from "./batch-sync-store";
 import {
   FILTER_INPUT_CLASS,
   FILTER_ROW_CLASS,
@@ -712,6 +715,12 @@ function RepoMenuItems({
 
 export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
   const library = useFolderLibrary();
+  const settings = useSettings();
+  const showBatch = useBatchSync((state) => state.show);
+  const hasRepos = Boolean(
+    settings.data?.recentRepos.length ||
+      library.data?.entries.some((entry) => entry.repository),
+  );
   const [view, setView] = useState<"folders" | "recent" | null>(null);
   const folders =
     view === "folders" ||
@@ -739,6 +748,26 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
           size="sm"
           variant="ghost"
           className="ml-auto"
+          disabled={!hasRepos}
+          title="Fetch all managed repositories"
+          aria-label="Fetch all repositories"
+          onClick={() => showBatch({ mode: "fetch" })}
+        >
+          <ArrowsClockwiseIcon />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={!hasRepos}
+          title="Pull all managed repositories"
+          aria-label="Pull all repositories"
+          onClick={() => showBatch({ mode: "pull" })}
+        >
+          <ArrowDownIcon />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
           onClick={() => {
             props.onOpened?.();
             dispatchAction("manage-repository-folders");

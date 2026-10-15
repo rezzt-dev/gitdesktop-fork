@@ -23,6 +23,10 @@ under `changelog.d/` (see its README); those are assembled here at release time 
   and moves that would break Git (linked worktrees, submodules, repositories
   with external worktrees) or that would replace an existing destination are
   refused.
+- **Batch repository sync.** Fetch or pull every managed repository at once, or
+  limit the operation to a selected folder. Review per-repository progress and
+  results, skip repositories that need individual attention, and stop a running
+  batch safely after the current operation.
 
 ### CHANGED
 
