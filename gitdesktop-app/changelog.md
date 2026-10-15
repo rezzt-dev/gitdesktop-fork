@@ -30,6 +30,7 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 
 ### CHANGED
 
+- Standardize primary, accent, focus-ring, and sidebar colors across light, dark, and Slate themes with a neutral palette for clearer contrast and consistent interface states.
 - Add a persisted interface zoom setting in Settings → Appearance, adjustable from 80% to 150% in 10% steps, and apply it consistently to the native webview and browser preview.
 - Remove zoom-in and zoom-out transitions from menus, dialogs, popovers, tooltips, and related overlays so interface scaling remains stable across compact displays.
 - Disable AI features in this distribution and persist `hideAi` so legacy settings cannot reactivate AI providers, reviews, automations, or related UI.

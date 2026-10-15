@@ -67,17 +67,14 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  /* Brand mint accent. Light mode uses a deeper teal (same hue ~175) so it
-     stays legible as text/icon color on white AND as a button bg with white
-     text; dark mode (below) uses the bright marketing mint. */
-  --primary: oklch(0.48 0.1 175);
+  /* Dark neutral keeps primary text and icons legible on light surfaces. */
+  --primary: oklch(0.25 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.516 0 0);
-  /* Selection/hover surfaces carry a whisper of mint instead of pure gray. */
-  --accent: oklch(0.93 0.035 175);
+  --accent: #ececec;
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --success: oklch(0.55 0.13 150);
@@ -86,7 +83,7 @@
   --merged: oklch(0.53 0.2 300);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.55 0.11 175);
+  --ring: oklch(0.35 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -95,12 +92,12 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.48 0.1 175);
+  --sidebar-primary: oklch(0.25 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.93 0.035 175);
+  --sidebar-accent: #ececec;
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.55 0.11 175);
+  --sidebar-ring: oklch(0.35 0 0);
 }
 
 .dark {
@@ -111,16 +108,14 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  /* Bright marketing mint (#4FE0C4) reads well as text on the dark surface
-     and as a button bg with dark text. */
-  --primary: oklch(0.82 0.11 175);
+  --primary: #ececec;
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.715 0 0);
-  --accent: oklch(0.32 0.04 175);
-  --accent-foreground: oklch(0.985 0 0);
+  --accent: #ececec;
+  --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --success: oklch(0.8 0.17 150);
   --warning: oklch(0.83 0.15 75);
@@ -128,7 +123,7 @@
   --merged: oklch(0.75 0.16 305);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.82 0.11 175);
+  --ring: #ececec;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -136,12 +131,12 @@
   --chart-5: oklch(0.269 0 0);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.82 0.11 175);
+  --sidebar-primary: #ececec;
   --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: oklch(0.32 0.04 175);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-accent: #ececec;
+  --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.82 0.11 175);
+  --sidebar-ring: #ececec;
 }
 
 /* "Slate" — a softer dark theme (Settings → Appearance) in the style of GitHub's
@@ -169,16 +164,14 @@
   --secondary-foreground: oklch(0.877 0.014 258);
   --muted-foreground: oklch(0.69 0.02 255);
   --sidebar-foreground: oklch(0.877 0.014 258);
-  --accent-foreground: oklch(0.877 0.014 258);
-  --sidebar-accent-foreground: oklch(0.877 0.014 258);
-  /* Selection / hover surfaces pick up the same cool tint. */
-  --accent: oklch(0.34 0.025 255);
-  --sidebar-accent: oklch(0.34 0.025 255);
-  /* Brand mint + focus ring, gently desaturated for the softer field. */
-  --primary: oklch(0.8 0.095 175);
-  --sidebar-primary: oklch(0.8 0.095 175);
-  --ring: oklch(0.8 0.095 175);
-  --sidebar-ring: oklch(0.8 0.095 175);
+  --accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --accent: #ececec;
+  --sidebar-accent: #ececec;
+  --primary: #ececec;
+  --sidebar-primary: #ececec;
+  --ring: #ececec;
+  --sidebar-ring: #ececec;
   /* Semantic state colors, desaturated so they don't glow on the lighter field. */
   --success: oklch(0.78 0.13 150);
   --warning: oklch(0.8 0.12 75);
