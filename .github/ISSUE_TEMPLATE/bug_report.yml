@@ -10,14 +10,14 @@ body:
         so we can reproduce and fix it quickly.
 
         **App crashed, or showed no error at all?**
-        [TROUBLESHOOTING.md](https://github.com/theBGuy/GitDesktop/blob/master/TROUBLESHOOTING.md)
+        [troubleshooting.md](../../gitdesktop-app/troubleshooting.md)
         covers where each platform records the crash, and how to open DevTools on a
         release build.
 
         **Not a bug?** Use the [feature request](?template=feature_request.yml)
         form for ideas, or [Discussions](https://github.com/theBGuy/GitDesktop/discussions)
         for questions. **Found a security vulnerability?** Do not file it here —
-        follow [SECURITY.md](https://github.com/theBGuy/GitDesktop/blob/master/SECURITY.md).
+        follow [security.md](../../security.md).
 
   - type: textarea
     id: description
@@ -105,7 +105,7 @@ body:
       description: >-
         Paste any errors or attach media. Please redact tokens, secrets, and private paths.
         If the app closed by itself, see
-        [TROUBLESHOOTING.md](https://github.com/theBGuy/GitDesktop/blob/master/TROUBLESHOOTING.md)
+        [troubleshooting.md](../../gitdesktop-app/troubleshooting.md)
         for the crash log on your platform.
     validations:
       required: false
@@ -119,5 +119,5 @@ body:
           required: true
         - label: I am on the latest release of GitDesktop.
           required: true
-        - label: This is not a security vulnerability (those go through SECURITY.md).
+        - label: This is not a security vulnerability (those go through security.md).
           required: true

@@ -9,7 +9,7 @@ body:
         Thanks for the idea! GitDesktop aims to be **calm, precise, and dependable** —
         the repo is the interface, AI is an assistant (not a spectacle), and fast
         loops beat feature tours. Proposals that fit that intent (see
-        [PRODUCT.md](https://github.com/theBGuy/GitDesktop/blob/master/PRODUCT.md))
+        [product.md](../../gitdesktop-app/product.md))
         are the easiest to land.
 
   - type: textarea
