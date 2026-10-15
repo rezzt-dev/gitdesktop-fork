@@ -433,6 +433,10 @@ export function RepositoryView() {
   const alias = useRepoAlias(repoPath);
   // The write-capable agent is an AI feature — hide its tab when AI is hidden.
   const aiEnabled = useAiEnabled();
+  // An old navigation target can still contain the removed Agent tab.
+  useEffect(() => {
+    if (!aiEnabled && repoTab === "agent") setRepoTab("changes");
+  }, [aiEnabled, repoTab, setRepoTab]);
   const branchHead = status.data?.branch;
   const currentName = branchHead?.name ?? null;
   // A detached HEAD (mid-rebase, or a raw `git checkout <sha>`) has no branch
@@ -471,7 +475,7 @@ export function RepositoryView() {
   // opened, then keep it mounted so <Activity> preserves session state. Keeps
   // the agent chunk off the boot path until the user opens the Agent tab.
   const [agentSeen, setAgentSeen] = useState(false);
-  if (repoTab === "agent" && !agentSeen) setAgentSeen(true);
+  if (aiEnabled && repoTab === "agent" && !agentSeen) setAgentSeen(true);
   // Palette "Blame file…": the picker (open state) and, once a file is picked,
   // the path to blame (worktree blame — no rev). Kept here (always mounted) so
   // the palette can reach it from any tab.

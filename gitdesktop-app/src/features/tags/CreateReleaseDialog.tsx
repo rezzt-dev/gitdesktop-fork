@@ -492,14 +492,6 @@ export function CreateReleaseDialog({
       aiEnabled && Boolean(tagTrimmed) && !busyGenerating && !isSubmitting,
     run: generateWithAi,
   });
-  // The chord's shortcut belongs on the item it drives; with AI off that item is
-  // disabled and says why instead.
-  const aiNotesHintTitle = generateChord.hint
-    ? `Summarize with AI${generateChord.hint}`
-    : undefined;
-  const aiNotesTitle = aiEnabled
-    ? aiNotesHintTitle
-    : "Enable AI in Settings first.";
 
   // The one submit gate, shared by the button and the form's native submit:
   // Enter must submit exactly when the button would. Publishing holds offline
@@ -732,7 +724,11 @@ export function CreateReleaseDialog({
                 aria-label="Release notes"
                 value={notes}
                 onChange={(v) => form.setFieldValue("notes", v)}
-                placeholder="What's changed… (or generate notes above)"
+                placeholder={
+                  isGitLab
+                    ? "What's changed…"
+                    : "What's changed… (or generate notes above)"
+                }
                 fill
                 // No `rows`/`resize-y` in fill mode: the explicit floor plus
                 // `flex-1` set the height, and a manual drag fights the flex sizing.
@@ -787,13 +783,18 @@ export function CreateReleaseDialog({
                             From GitHub (commits & PRs)
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem
-                          disabled={!aiEnabled}
-                          title={aiNotesTitle}
-                          onClick={generateWithAi}
-                        >
-                          Summarize with AI
-                        </DropdownMenuItem>
+                        {aiEnabled && (
+                          <DropdownMenuItem
+                            title={
+                              generateChord.hint
+                                ? `Summarize with AI${generateChord.hint}`
+                                : undefined
+                            }
+                            onClick={generateWithAi}
+                          >
+                            Summarize with AI
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )

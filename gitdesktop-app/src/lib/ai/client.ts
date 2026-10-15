@@ -12,6 +12,8 @@ import { isCliProvider, PROVIDERS_REQUIRING_KEY } from "./providers";
 import { httpToolStatusLine } from "./review-tools";
 import type { AiClient, AiSettings, AiStreamRequest } from "./types";
 
+const AI_RUNTIME_ENABLED = false;
+
 export class MissingApiKeyError extends Error {
   constructor(provider: string) {
     super(`No API key saved for ${provider}. Add one in Settings.`);
@@ -30,6 +32,8 @@ export async function resolveModel(
   apiKeyOverride?: string,
   allowedHostsOverride?: readonly string[],
 ): Promise<LanguageModel> {
+  if (!AI_RUNTIME_ENABLED)
+    throw new Error("AI features are disabled in this build.");
   const needsKey = PROVIDERS_REQUIRING_KEY.includes(settings.provider);
   const override = apiKeyOverride?.trim();
   const apiKey = needsKey
@@ -62,6 +66,8 @@ export async function createAiClient(
   apiKeyOverride?: string,
   allowedHostsOverride?: readonly string[],
 ): Promise<AiClient> {
+  if (!AI_RUNTIME_ENABLED)
+    throw new Error("AI features are disabled in this build.");
   // A CLI id must never reach the SDK model factory — branch before resolveModel.
   // Lazy import mirrors the model-factory pattern (heavy deps load only on use).
   if (isCliProvider(settings.provider)) {

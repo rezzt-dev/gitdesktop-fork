@@ -50,32 +50,6 @@ const TOOL_META: Record<
     auth: true,
     role: "GitLab support.",
   },
-  claude: {
-    name: "Claude Code",
-    install: "https://docs.anthropic.com/en/docs/claude-code/overview",
-    auth: true,
-    role: "Keyless AI review via your Claude subscription.",
-  },
-  codex: {
-    name: "Codex CLI",
-    install: "https://developers.openai.com/codex/cli/",
-    auth: true,
-    role: "Keyless AI review via your ChatGPT plan.",
-  },
-  copilot: {
-    name: "GitHub Copilot CLI",
-    install: "https://github.com/github/copilot-cli",
-    // No non-interactive auth-status command, so login state stays Unknown.
-    auth: false,
-    role: "Keyless agent sessions via your Copilot subscription.",
-  },
-  opencode: {
-    name: "opencode",
-    install: "https://opencode.ai",
-    // No non-interactive auth-status command, so login state stays Unknown.
-    auth: false,
-    role: "Agent sessions + review; keyless via opencode's free hosted models.",
-  },
 };
 
 /** Sign-in line per status; `null` renders nothing. `unreachable` names no host:

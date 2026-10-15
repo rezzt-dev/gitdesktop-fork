@@ -1,11 +1,8 @@
-import { WarningIcon } from "@phosphor-icons/react";
 import { useSelector } from "@tanstack/react-store";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { PRIVACY_POLICY_URL, resetAnalyticsId } from "@/lib/analytics";
-import { useAutomations } from "@/lib/automations/queries";
-import { anyAutomationEnabled } from "@/lib/automations/types";
 import { withForm } from "@/lib/form";
 import type { AUTO_FETCH_INTERVALS } from "@/lib/settings/api";
 import { settingsFormOpts } from "./settings-form";
@@ -27,13 +24,6 @@ export const GeneralSection = withForm({
   ...settingsFormOpts,
   render: function GeneralSectionRender({ form }) {
     const autoFetchOn = useSelector(form.store, (s) => s.values.autoFetch);
-    // Keyed off the DRAFT value so the consequence shows before Save commits it, and
-    // stands as the standing explanation once hiding AI is saved on.
-    const hideAiOn = useSelector(form.store, (s) => s.values.hideAi);
-    const automations = useAutomations();
-    const automationsPaused =
-      hideAiOn &&
-      Boolean(automations.data && anyAutomationEnabled(automations.data));
     return (
       <section className="space-y-4">
         <div>
@@ -43,35 +33,6 @@ export const GeneralSection = withForm({
         {/* Each toggle is grouped with its own description (tight spacing) so
             the helper text reads as belonging to the control above it, not the
             next one down. */}
-        <div className="space-y-1.5">
-          <form.AppField name="hideAi">
-            {(field) => (
-              <field.CheckboxField
-                label="Hide AI features"
-                className="flex cursor-pointer items-center gap-2 text-xs"
-              />
-            )}
-          </form.AppField>
-          <p className="text-xs text-muted-foreground">
-            Hides the AI commit-message and pull-request helpers, the AI review
-            panel, the AI-related settings sections, and finished AI activity in
-            the dock and notification inbox, mutes AI desktop notifications, and
-            pauses your automations. Your provider, API keys, and rules are kept
-            — automations run again once you turn AI features back on.
-          </p>
-          {automationsPaused && (
-            <p
-              role="status"
-              className="flex items-start gap-1.5 text-xs text-warning"
-            >
-              <WarningIcon className="size-4 shrink-0" />
-              <span>
-                You have automations turned on — they won't run while AI
-                features are hidden.
-              </span>
-            </p>
-          )}
-        </div>
         <div className="space-y-1.5">
           <form.AppField name="closeToTray">
             {(field) => (

@@ -10,8 +10,9 @@ organización propia para facilitar el mantenimiento, la revisión y la
 distribución del proyecto.
 
 la aplicación funciona en windows, macos y linux. incluye integración con
-repositorios git, ramas, cambios, historial, pull requests, automatizaciones y
-funciones de inteligencia artificial opcionales.
+repositorios git, ramas, cambios, historial y pull requests. las funciones de
+inteligencia artificial están desactivadas y ocultas en este fork, incluidas las
+automatizaciones basadas en IA.
 
 ## ESTRUCTURA
 

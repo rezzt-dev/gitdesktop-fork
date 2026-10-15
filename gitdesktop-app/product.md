@@ -10,11 +10,11 @@ Software developers working in a desktop Git client all day, usually alongside a
 
 ## Product Purpose
 
-GitDesktop is an AI-native Git client: GitHub Desktop-style fundamentals (status, staging, branches, history, diffs, sync) plus first-class AI assistance — generated commit messages, PR titles/descriptions, and code/security review — with a bring-your-own-model setup (Anthropic, OpenAI, Google AI Studio, OpenRouter, local Ollama, Ollama Cloud, any OpenAI-compatible endpoint, plus keyless CLI agents — Claude Code, Codex, GitHub Copilot, opencode). It also covers the full pull-request loop (PRs and issues across GitHub, GitLab, and Bitbucket, plus private local PRs, with issues extending to linked Jira projects) without leaving the app. Success looks like: a developer keeps GitDesktop open all day, trusts it with destructive operations, and ships better-described commits and PRs with less typing.
+GitDesktop is a desktop Git client centered on status, staging, branches, history, diffs, and sync. It also covers the pull-request loop across GitHub, GitLab, and Bitbucket, including private local PRs and issues linked to Jira projects. This fork keeps AI features disabled and out of the interface. Success looks like a developer keeping GitDesktop open all day, trusting it with destructive operations, and completing commits and PRs with a clear, fast manual workflow.
 
 ## Brand Personality
 
-Calm developer tool. Quiet, precise, trustworthy — the work (diffs, branches, PRs) is always the visual focus; the chrome stays out of the way. Three words: **calm, precise, dependable**. Reference feel: Linear's restraint and GitHub Desktop's familiarity, with JetBrains Mono giving it a technical backbone. AI features should feel like a capable assistant built into the workflow, not a spectacle.
+Calm developer tool. Quiet, precise, trustworthy — the work (diffs, branches, PRs) is always the visual focus; the chrome stays out of the way. Three words: **calm, precise, dependable**. Reference feel: Linear's restraint and GitHub Desktop's familiarity, with JetBrains Mono giving it a technical backbone.
 
 ## Anti-references
 
@@ -27,7 +27,7 @@ Calm developer tool. Quiet, precise, trustworthy — the work (diffs, branches, 
 1. **The repo is the interface** — diffs, branches, and commits get the space and contrast; app chrome is muted and minimal.
 2. **Never surprise on destructive paths** — anything that can lose work (discard, reset, force-push, merge) confirms clearly and offers a way back; state changes always give feedback.
 3. **Fast loops over feature tours** — the daily stage→commit→push and review→merge loops take minimal clicks; accelerators (filters, switchers, keyboard) over wizards.
-4. **AI is an assistant, not a spectacle** — generated content streams into the same inputs the user would type in; it's editable, attributable, and never blocks the manual path.
+4. **Manual work stays complete** — every commit, pull request, issue, and review can be written and completed directly in the app.
 5. **One quiet system** — a single restrained palette and component set (shadcn/Base UI) used consistently; emphasis comes from hierarchy and spacing, not new colors per feature.
 
 ## Accessibility & Inclusion

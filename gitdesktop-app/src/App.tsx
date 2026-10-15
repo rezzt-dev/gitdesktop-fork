@@ -8,8 +8,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { ReconnectDialog } from "@/features/accounts/ReconnectDialog";
 import { ActivityStrip } from "@/features/activity/ActivityDock";
 import { useMacAppMenu } from "@/features/app-menu/useMacAppMenu";
-import { AutomationHistoryDialogHost } from "@/features/automations/AutomationHistoryDialog";
-import { AutomationResultDialog } from "@/features/automations/AutomationResultDialog";
 import { ExploreScreen } from "@/features/explore/ExploreScreen";
 import { HelpScreen } from "@/features/help/HelpScreen";
 import { MyWorkScreen } from "@/features/mywork/MyWorkScreen";
@@ -29,7 +27,6 @@ import { GitMissingScreen } from "@/features/welcome/GitMissingScreen";
 import { useRepoDrop } from "@/features/welcome/useRepoDrop";
 import { WelcomeScreen } from "@/features/welcome/WelcomeScreen";
 import { syncAnalytics, track } from "@/lib/analytics";
-import { useBackgroundPrSync } from "@/lib/automations/useBackgroundPrSync";
 import {
   invalidateRepoOnFocus,
   useGitInstalled,
@@ -177,12 +174,6 @@ function App() {
   // Drop a repo folder anywhere on the window to open it.
   useRepoDrop();
 
-  // Keep pr-sync (auto re-review) automations firing for recent repos that
-  // AREN'T the one currently open — the active repo's own poller covers it, but
-  // this catches pushes to repos you've switched away from. Always mounted (any
-  // view, welcome included); no-op unless a recent repo carries a pr-sync rule.
-  useBackgroundPrSync();
-
   // Warm the work inbox's sources probe here rather than on its first render:
   // it reads two CLI configs plus the keyring over IPC, and paying for that at
   // app open keeps it off the critical path of the welcome → My work jump.
@@ -231,9 +222,9 @@ function App() {
   useHotkeyAction(
     "open-mcp-servers-settings",
     () => openSettings("mcp-servers"),
-    !settings.data?.hideAi,
+    false,
   );
-  useHotkeyAction("browse-mcp-registry", openMcpBrowse, !settings.data?.hideAi);
+  useHotkeyAction("browse-mcp-registry", openMcpBrowse, false);
   useHotkeyAction(
     "open-notifications-settings",
     () => openSettings("notifications"),
@@ -328,8 +319,6 @@ function App() {
             its in-header dock instead); only present while a review runs. */}
         <ActivityStrip />
       </div>
-      <AutomationResultDialog />
-      <AutomationHistoryDialogHost />
       <RepoNotificationsDialogHost />
       <FolderManager open={foldersOpen} onOpenChange={setFoldersOpen} />
       <BatchSyncDialog />

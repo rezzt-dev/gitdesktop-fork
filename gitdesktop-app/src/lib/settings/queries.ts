@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import { PROVIDERS_REQUIRING_KEY } from "@/lib/ai/providers";
 import type { AiProviderId } from "@/lib/ai/types";
 import { getSecret } from "@/lib/git/api";
 import { repoIdentityQueryOptions } from "@/lib/git/repo-identity-query";
@@ -59,16 +58,13 @@ export function useRepoKeys(repoPath: string | null): RepoKeys {
   }, [repoPath, identity]);
 }
 
-/** Whether AI features are shown. False once the user hides them in Settings;
- *  defaults to true while settings load (AI shown unless explicitly hidden). */
+/** AI surfaces are permanently unavailable in this build. */
 export function useAiEnabled(): boolean {
-  const settings = useSettings();
-  return !settings.data?.hideAi;
+  return false;
 }
 
 /** Whether a link preview may contact the linked site. Reads false until the
- *  store answers — the opposite of {@link useAiEnabled}'s optimism, because
- *  guessing wrong here would reach a third-party host the user opted out of;
+ *  store answers, because guessing wrong here would reach a third-party host;
  *  the query resolves once per session and the card re-renders with the real
  *  value. */
 export function useFetchLinkPreviews(): boolean {
@@ -76,35 +72,14 @@ export function useFetchLinkPreviews(): boolean {
   return settings.data?.fetchLinkPreviews ?? false;
 }
 
-/**
- * Whether the commit/PR generation provider is actually usable: a saved API
- * key for key-based providers (Anthropic/OpenAI/OpenRouter), always true for
- * local ones (Ollama). Optimistic while the keychain read is in flight, so the
- * "Set up AI" prompt only appears once we've confirmed there's no key — it
- * never flashes for an already-configured user.
- */
+/** Generation cannot be configured in this build. */
 export function useAiConfigured(): boolean {
-  const settings = useSettings();
-  const provider = settings.data?.ai.provider ?? "anthropic";
-  const needsKey = PROVIDERS_REQUIRING_KEY.includes(provider);
-  const secret = useSecretPreview(provider);
-  if (!needsKey) return true;
-  return secret.isSuccess ? secret.data !== null : true;
+  return false;
 }
 
-/**
- * Whether the **review** model (Settings → AI → Review model) is usable: a saved
- * key for key-based providers, always true for local/CLI ones. Mirrors
- * {@link useAiConfigured} but for `reviewAi` — used to gate AI conflict resolution
- * and the Debug-with-AI affordances.
- */
+/** Review cannot be configured in this build. */
 export function useReviewConfigured(): boolean {
-  const settings = useSettings();
-  const provider = settings.data?.reviewAi.provider ?? "anthropic";
-  const needsKey = PROVIDERS_REQUIRING_KEY.includes(provider);
-  const secret = useSecretPreview(provider);
-  if (!needsKey) return true;
-  return secret.isSuccess ? secret.data !== null : true;
+  return false;
 }
 
 export function useSaveSettings() {

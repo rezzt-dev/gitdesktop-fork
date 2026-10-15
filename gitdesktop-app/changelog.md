@@ -30,12 +30,20 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 
 ### CHANGED
 
+- Disable AI features in this distribution and persist `hideAi` so legacy settings cannot reactivate AI providers, reviews, automations, or related UI.
+- Limit Settings → About diagnostics to Git, GitHub CLI, and GitLab CLI, and update the product and troubleshooting documentation to describe the manual workflow.
+
 - reorganize the fork so the application source, tooling, dependencies and technical documentation live under `gitdesktop-app/`, while repository documentation and github automation remain at the root; keep upstream references outside the operational project tree.
 
 ### FIXED
 
 - commit actions now parse Git's real `status --porcelain=v2 -z` output correctly, preserving the branch metadata and first changed or staged file so the commit button enables when the repository is ready.
 - repository change-read failures now show a clear retry action instead of presenting the repository as clean, and commit controls explain when repository status is still loading or unavailable.
+
+### REMOVED
+
+- Remove AI provider, slash-command, MCP-server, automation, and agent surfaces from settings, navigation, shortcuts, background sync, and release-note actions.
+- Disable the `mcp` command with an explicit error instead of starting the MCP server.
 
 ## [0.13.5] - 2026-10-15
 

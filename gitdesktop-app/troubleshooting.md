@@ -104,7 +104,7 @@ artifact.
 Several features shell out to external tools, and they quietly reduce functionality when
 one is missing, outdated, or signed out. **Settings → About** lists every tool
 GitDesktop depends on with its version, path, and sign-in state, and links to a download
-for anything missing. Include that list when a GitHub, GitLab, or AI feature behaves
+for anything missing. Include that list when a GitHub or GitLab feature behaves
 unexpectedly.
 
 ## Filing the report

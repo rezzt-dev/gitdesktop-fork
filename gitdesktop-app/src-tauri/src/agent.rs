@@ -21,6 +21,7 @@ use tokio::sync::Notify;
 use crate::error::{AppError, AppResult};
 use crate::state::AppState;
 
+const AI_RUNTIME_ENABLED: bool = false;
 pub(crate) const DETECT_TIMEOUT: Duration = Duration::from_secs(20);
 /// A warm `opencode models` returns in ~1.5s (measured); the catalog resolves
 /// from opencode's disk cache or its binary-bundled snapshot, so the sync HTTP
@@ -2583,6 +2584,9 @@ pub async fn agent_review(
     review_id: String,
     on_event: Channel<ReviewEvent>,
 ) -> AppResult<()> {
+    if !AI_RUNTIME_ENABLED {
+        return Err(AppError::Command("AI features are disabled in this build.".into()));
+    }
     if !valid_cancel_id(&review_id) {
         return Err(AppError::InvalidArgument("invalid review id".into()));
     }
@@ -2783,6 +2787,9 @@ pub async fn agent_session(
     mcp_servers: Option<Vec<crate::mcp::McpServerSpec>>,
     on_event: Channel<ReviewEvent>,
 ) -> AppResult<()> {
+    if !AI_RUNTIME_ENABLED {
+        return Err(AppError::Command("AI features are disabled in this build.".into()));
+    }
     if !valid_cancel_id(&session_id) {
         return Err(AppError::InvalidArgument("invalid session id".into()));
     }

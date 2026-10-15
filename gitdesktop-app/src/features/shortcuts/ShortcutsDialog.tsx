@@ -8,7 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { formatBinding } from "@/lib/hotkeys/binding";
 import { useEffectiveBindings } from "@/lib/hotkeys/hotkeys";
-import { ACTIONS, BUILT_IN_KEYS, CATEGORY_ORDER } from "@/lib/hotkeys/registry";
+import {
+  ACTIONS,
+  BUILT_IN_KEYS,
+  CATEGORY_ORDER,
+  isVisibleAction,
+} from "@/lib/hotkeys/registry";
 import { cn } from "@/lib/utils";
 
 function Kbd({ children }: { children: React.ReactNode }) {
@@ -50,28 +55,33 @@ export function ShortcutsDialog({
             "grid max-h-[65vh] items-start gap-x-10 sm:grid-cols-2",
           )}
         >
-          {CATEGORY_ORDER.map((category) => (
+          {CATEGORY_ORDER.filter((category) =>
+            ACTIONS.some(
+              (action) =>
+                action.category === category && isVisibleAction(action),
+            ),
+          ).map((category) => (
             <section key={category} className="mb-5">
               <h3 className="mb-1.5 text-xs font-semibold">{category}</h3>
               <ul className="space-y-1">
-                {ACTIONS.filter((a) => a.category === category).map(
-                  (action) => {
-                    const binding = bindings.get(action.id);
-                    return (
-                      <li
-                        key={action.id}
-                        className="flex items-center justify-between gap-3 text-xs"
-                      >
-                        <span className="min-w-0 truncate">{action.label}</span>
-                        {binding ? (
-                          <Kbd>{formatBinding(binding)}</Kbd>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </li>
-                    );
-                  },
-                )}
+                {ACTIONS.filter(
+                  (a) => a.category === category && isVisibleAction(a),
+                ).map((action) => {
+                  const binding = bindings.get(action.id);
+                  return (
+                    <li
+                      key={action.id}
+                      className="flex items-center justify-between gap-3 text-xs"
+                    >
+                      <span className="min-w-0 truncate">{action.label}</span>
+                      {binding ? (
+                        <Kbd>{formatBinding(binding)}</Kbd>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}

@@ -16,6 +16,7 @@ import {
   ACTIONS,
   type ActionDef,
   CATEGORY_ORDER,
+  isVisibleAction,
 } from "@/lib/hotkeys/registry";
 import { matchesActionText, queryTokens } from "@/lib/hotkeys/search";
 import { cn } from "@/lib/utils";
@@ -218,7 +219,7 @@ export const KeyboardSection = withForm({
     const groups = CATEGORY_ORDER.map((category) => ({
       category,
       actions: ACTIONS.filter(
-        (a) => a.category === category && matchesQuery(a),
+        (a) => isVisibleAction(a) && a.category === category && matchesQuery(a),
       ),
     })).filter((group) => group.actions.length > 0);
     const shownCount = groups.reduce((n, group) => n + group.actions.length, 0);

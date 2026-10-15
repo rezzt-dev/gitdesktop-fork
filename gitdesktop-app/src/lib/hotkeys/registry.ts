@@ -26,6 +26,23 @@ export interface ActionDef {
   defaultBinding: string | null;
 }
 
+const HIDDEN_AI_ACTIONS = new Set([
+  "open-mcp-servers-settings",
+  "browse-mcp-registry",
+  "tab-agent",
+  "ai-excluded-files",
+  "automations",
+  "automation-history",
+  "generate-commit-message",
+  "resolve-conflict-ai",
+  "run-pr-automations",
+]);
+
+/** Keep removed features out of both shortcut editors and the cheat sheet. */
+export function isVisibleAction(action: ActionDef): boolean {
+  return action.category !== "Agent" && !HIDDEN_AI_ACTIONS.has(action.id);
+}
+
 export const ACTIONS = [
   {
     id: "manage-repository-folders",

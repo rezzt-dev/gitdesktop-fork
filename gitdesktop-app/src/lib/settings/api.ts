@@ -476,7 +476,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   reviewContextSize: "auto",
   reviewTimeout: "auto",
   reviewEffort: "auto",
-  hideAi: false,
+  hideAi: true,
   notifications: {
     sources: {
       prChecks: { inApp: true, os: true },
@@ -808,7 +808,7 @@ function healEnumerated(settings: AppSettings): AppSettings {
 export async function loadSettings(): Promise<AppSettings> {
   const store = await getStore();
   const saved = await store.get<Partial<AppSettings>>("settings");
-  return healEnumerated({
+  const settings = healEnumerated({
     ...DEFAULT_SETTINGS,
     ...saved,
     ai: { ...DEFAULT_SETTINGS.ai, ...saved?.ai },
@@ -826,6 +826,9 @@ export async function loadSettings(): Promise<AppSettings> {
       : {}),
     notifications: healNotifications(saved?.notifications),
   });
+  // AI is disabled in this distribution. Ignore legacy saved preferences so
+  // existing installations cannot reactivate background reviews on upgrade.
+  return { ...settings, hideAi: true };
 }
 
 /**
@@ -838,7 +841,7 @@ export async function loadSettings(): Promise<AppSettings> {
 async function saveSettings(settings: AppSettings): Promise<void> {
   // Cache-only: the chain's forced save persists it inside the store lock.
   const store = await getStore();
-  await store.set("settings", settings);
+  await store.set("settings", { ...settings, hideAi: true });
 }
 
 /**

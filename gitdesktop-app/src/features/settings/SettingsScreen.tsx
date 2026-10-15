@@ -16,7 +16,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import { AutomationsSection } from "@/features/automations/AutomationsSection";
 import { useAppForm } from "@/lib/form";
 import {
   notificationsSignature,
@@ -29,9 +28,7 @@ import { useUiStore } from "@/lib/stores/ui";
 import { useLatestRef } from "@/lib/use-latest-ref";
 import { AboutSection } from "./AboutSection";
 import { AccountsSection } from "./AccountsSection";
-import { AiProviderSection } from "./AiProviderSection";
 import { AppearanceSection } from "./AppearanceSection";
-import { CommandsSection } from "./CommandsSection";
 import { EditorSection } from "./EditorSection";
 import { GeneralSection } from "./GeneralSection";
 import {
@@ -40,9 +37,7 @@ import {
   LineEndingsSection,
   RepoIdentitySection,
 } from "./GitSection";
-import { InstructionsSection } from "./InstructionsSection";
 import { KeyboardSection } from "./KeyboardSection";
-import { McpServersSection } from "./McpServersSection";
 import { NotificationsSection } from "./NotificationsSection";
 import { settingsFormOpts, toDraft } from "./settings-form";
 import { TerminalSection } from "./TerminalSection";
@@ -62,10 +57,6 @@ const SyntaxSection = lazy(() =>
 const PANELS = [
   { id: "general", label: "General" },
   { id: "appearance", label: "Appearance" },
-  { id: "ai", label: "AI" },
-  { id: "commands", label: "Slash commands" },
-  { id: "mcp-servers", label: "MCP servers" },
-  { id: "automations", label: "Automations" },
   { id: "notifications", label: "Notifications" },
   { id: "keyboard", label: "Keyboard" },
   { id: "accounts", label: "Accounts" },
@@ -95,14 +86,6 @@ function stableStringify(value: unknown): string {
   );
 }
 
-/** Panels that only make sense when AI features are enabled. */
-const AI_PANELS = new Set<PanelId>([
-  "ai",
-  "commands",
-  "mcp-servers",
-  "automations",
-]);
-
 export function SettingsScreen() {
   const closeSettings = useUiStore((s) => s.closeSettings);
   const settingsTarget = useUiStore((s) => s.settingsTarget);
@@ -111,16 +94,11 @@ export function SettingsScreen() {
   const settings = useSettings();
   const saveSettings = useSaveSettings();
   const [panel, setPanel] = useState<PanelId>(
-    // Honor a deep-link target on first render (e.g. "Set up AI" → AI panel).
+    // Honor a deep-link target on first render when it remains available.
     (settingsTarget as PanelId | null) ?? "general",
   );
   const [confirmClose, setConfirmClose] = useState(false);
   const closeAfterSave = useRef(false);
-  // The Automations panel edits its own draft (saved independently of the
-  // settings form); track its dirtiness so closing Settings still guards it, and
-  // hold its imperative save so "Save and close" persists it too.
-  const [automationsDirty, setAutomationsDirty] = useState(false);
-  const saveAutomationsRef = useRef<(() => void) | null>(null);
 
   // A deep-link fired while Settings is already open (no remount) still routes
   // to the requested section; consume the target so it doesn't re-fire.
@@ -130,20 +108,11 @@ export function SettingsScreen() {
     clearSettingsTarget();
   }, [settingsTarget, clearSettingsTarget]);
 
-  // Gating reflects SAVED settings (not the in-progress draft), so panels don't
-  // vanish mid-edit while the user is still toggling "Hide AI features".
-  const aiEnabled = !settings.data?.hideAi;
-  const visiblePanels = useMemo(
-    () => PANELS.filter((p) => aiEnabled || !AI_PANELS.has(p.id)),
-    [aiEnabled],
-  );
-  // Keep a sensible active panel if the current one got hidden.
-  const activePanel = visiblePanels.some((p) => p.id === panel)
-    ? panel
-    : "general";
+  // Old deep links to removed sections land on General.
+  const activePanel = PANELS.some((p) => p.id === panel) ? panel : "general";
   const railGroups = useMemo(
-    () => [{ items: visiblePanels.map((p) => ({ id: p.id, label: p.label })) }],
-    [visiblePanels],
+    () => [{ items: PANELS.map((p) => ({ id: p.id, label: p.label })) }],
+    [],
   );
 
   const form = useAppForm({
@@ -226,15 +195,9 @@ export function SettingsScreen() {
       publishNotificationsDraft(notificationsDraft);
   }, [notificationsDraft, publishNotificationsDraft]);
 
-  // Either the settings form or the Automations panel having unsaved edits
-  // should guard closing the screen.
-  const closeDirty = dirty || automationsDirty;
+  const closeDirty = dirty;
 
   function save(andClose: boolean) {
-    // Persist the Automations panel's own draft alongside the settings form —
-    // fire-and-forget, like the form save: the store write completes even as the
-    // screen closes. Without this, "Save and close" would silently drop it.
-    if (automationsDirty) saveAutomationsRef.current?.();
     closeAfterSave.current = andClose;
     form.handleSubmit();
   }
@@ -298,25 +261,6 @@ export function SettingsScreen() {
             <main className="mx-auto w-full max-w-2xl space-y-8 p-6">
               {activePanel === "general" && <GeneralSection form={form} />}
               {activePanel === "appearance" && <AppearanceSection />}
-              {activePanel === "ai" && (
-                <>
-                  <AiProviderSection form={form} />
-                  <InstructionsSection form={form} />
-                </>
-              )}
-              {activePanel === "commands" && <CommandsSection form={form} />}
-              {activePanel === "mcp-servers" && (
-                <McpServersSection form={form} />
-              )}
-              {activePanel === "automations" && (
-                <AutomationsSection
-                  form={form}
-                  onDirtyChange={setAutomationsDirty}
-                  onRegisterSave={(fn) => {
-                    saveAutomationsRef.current = fn;
-                  }}
-                />
-              )}
               {activePanel === "notifications" && (
                 <NotificationsSection form={form} />
               )}

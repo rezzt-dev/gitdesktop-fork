@@ -1,14 +1,12 @@
 //! The Settings → About screen's diagnostics: OS/app info and the status of the
-//! external command-line tools several features shell out to (git, gh, glab, and
-//! the Claude/Codex agent CLIs). Reuses agent.rs's binary resolver + capture so
-//! detection behaves identically to the AI-provider setup (PATH + login-shell
-//! fallback, Windows `.cmd` shims, …).
+//! external command-line tools several features shell out to (git, gh, glab).
+//! Reuses the shared binary resolver and capture code.
 
 use std::path::Path;
 
 use serde::Serialize;
 
-use crate::agent::{exit_code_auth, resolve_named, run_capture, AuthStatus, DETECT_TIMEOUT};
+use crate::agent::{resolve_named, run_capture, AuthStatus, DETECT_TIMEOUT};
 use crate::error::{AppError, AppResult};
 use crate::forge::futures_join_all;
 use crate::forge::glab::{
@@ -76,8 +74,6 @@ fn undetected(id: &str) -> ToolStatus {
 enum AuthProbe {
     /// No login concept, or no non-interactive status command.
     None,
-    /// A local status command whose exit code is the whole verdict.
-    ExitCode(&'static [&'static str]),
     /// gh's per-account `--json` report, which tells an outage from a rejected token.
     Gh,
     /// `glab auth status` per configured host, each classified as session health's is.
@@ -182,9 +178,6 @@ async fn detect(id: &str, names: &[&str], auth: AuthProbe) -> ToolStatus {
 
     let authed = match auth {
         AuthProbe::None => AuthStatus::Unknown,
-        AuthProbe::ExitCode(args) => {
-            exit_code_auth(run_capture(&binary, args, DETECT_TIMEOUT).await)
-        }
         AuthProbe::Gh => gh_cli_auth_status().await,
         AuthProbe::Glab => glab_cli_auth(&binary).await,
     };
@@ -201,25 +194,11 @@ async fn detect(id: &str, names: &[&str], auth: AuthProbe) -> ToolStatus {
 /// One tool detection: id, candidate binary names, and how its sign-in is read.
 type Probe = (&'static str, &'static [&'static str], AuthProbe);
 
-/// Every CLI the About screen reports on, in the order it displays them. Copilot
-/// has no non-interactive auth-status command (it authenticates via the OS
-/// credential store / a token env var), so its login state stays Unknown.
-static PROBES: [Probe; 7] = [
+/// Every CLI the About screen reports on, in display order.
+static PROBES: [Probe; 3] = [
     ("git", &["git"], AuthProbe::None),
     ("gh", &["gh"], AuthProbe::Gh),
     ("glab", &["glab"], AuthProbe::Glab),
-    (
-        "claude",
-        &["claude"],
-        AuthProbe::ExitCode(&["auth", "status"]),
-    ),
-    (
-        "codex",
-        &["codex"],
-        AuthProbe::ExitCode(&["login", "status"]),
-    ),
-    ("copilot", &["copilot"], AuthProbe::None),
-    ("opencode", &["opencode"], AuthProbe::None),
 ];
 
 /// OS/app info + the status of every external CLI, for Settings → About. The
@@ -228,7 +207,7 @@ static PROBES: [Probe; 7] = [
 pub async fn system_health() -> AppResult<SystemHealth> {
     // Each detection runs as its own task to keep this command's future tiny:
     // the invoke handler CONSTRUCTS a command future on the WebView2 UI-thread
-    // stack before tauri's runtime polls it on a worker, and the seven detect
+    // stack before tauri's runtime polls it on a worker, and the detect
     // futures inlined here overflowed that stack in release builds (~721 KB
     // handler frame, v0.12.1 crash dump; the same future was 123,000 B in
     // debug and fit — why dev never crashed).
@@ -239,7 +218,7 @@ pub async fn system_health() -> AppResult<SystemHealth> {
             (id, handle)
         })
         // collect() drives every spawn before the first await below; awaiting
-        // inside one loop would serialize seven probes, each up to three timed
+        // inside one loop would serialize probes, each up to three timed
         // subprocess legs (resolve, version, sign-in).
         .collect();
 
