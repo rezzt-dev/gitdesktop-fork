@@ -1,0 +1,1 @@
+- la aplicación muestra una animación de carga de 1,5 segundos y aparece mediante un desvanecimiento suave, sin pantallas blancas ni negras intermedias.

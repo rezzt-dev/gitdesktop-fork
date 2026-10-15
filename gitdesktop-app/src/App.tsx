@@ -65,6 +65,10 @@ function App() {
   const publishedNotificationsDraft = useNotificationsDraft((s) => s.signature);
   const clearNotificationsDraft = useNotificationsDraft((s) => s.clear);
   const gitInstalled = useGitInstalled();
+  useEffect(() => {
+    if (!gitInstalled.isPending)
+      window.dispatchEvent(new Event("gd:app-ready"));
+  }, [gitInstalled.isPending]);
   const queryClient = useQueryClient();
   const settings = useSettings();
   const interfaceZoom = settings.data?.interfaceZoom;

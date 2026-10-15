@@ -14,6 +14,8 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 
 ### Added
 
+- Show a 1.5-second startup animation with a smooth fade-in and fade-out, avoiding
+  intermediate white or black screens while GitDesktop loads.
 - **Repository folders.** Import an existing directory hierarchy and keep the
   same organization in GitDesktop: browse folders in the welcome screen and the
   repository switcher, and create subfolders, rename, move, or delete empty
@@ -42,6 +44,8 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 
 ### FIXED
 
+- Place repositories before folders at every level of the folder tree and sort
+  each group alphabetically, including filtered results.
 - commit actions now parse Git's real `status --porcelain=v2 -z` output correctly, preserving the branch metadata and first changed or staged file so the commit button enables when the repository is ready.
 - repository change-read failures now show a clear retry action instead of presenting the repository as clean, and commit controls explain when repository status is still loading or unavailable.
 - closing the window now quits GitDesktop completely instead of leaving it running in the system tray; when offline changes are waiting to send, the app asks for confirmation before exiting.

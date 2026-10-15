@@ -39,6 +39,15 @@ export function folderRows(
     siblings.push(entry);
     children.set(parent, siblings);
   }
+  const byName = new Intl.Collator(undefined, { sensitivity: "base" });
+  for (const siblings of children.values()) {
+    siblings.sort(
+      (a, b) =>
+        Number(b.repository) - Number(a.repository) ||
+        byName.compare(a.name, b.name) ||
+        a.path.localeCompare(b.path),
+    );
+  }
   const query = filter.trim().toLocaleLowerCase();
   const matching = new Set<string>();
   if (query) {

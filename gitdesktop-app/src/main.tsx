@@ -51,6 +51,27 @@ window.addEventListener("unhandledrejection", (e) => {
   trackCaughtError(e.reason, false);
 });
 
+// The splash is in index.html so it paints before this bundle is evaluated.
+// Keep it up until the first real app screen is ready, then crossfade over it.
+const splash = document.getElementById("startup-splash");
+if (splash) {
+  const started =
+    performance.getEntriesByName("gd:splash-start")[0]?.startTime ??
+    performance.now();
+  const minimum = new Promise<void>((resolve) => {
+    window.setTimeout(resolve, Math.max(0, started + 1150 - performance.now()));
+  });
+  const ready = new Promise<void>((resolve) => {
+    window.addEventListener("gd:app-ready", () => resolve(), { once: true });
+    // Reveal the error boundary if startup fails before App can signal readiness.
+    window.setTimeout(resolve, 8000);
+  });
+  void Promise.all([minimum, ready]).then(() => {
+    splash.classList.add("is-exiting");
+    window.setTimeout(() => splash.remove(), 350);
+  });
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

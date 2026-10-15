@@ -5,8 +5,39 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>gitdesktop</title>
+    <style>
+      html, body { margin: 0; min-height: 100%; }
+      html { background: #171717; }
+      #startup-splash {
+        position: fixed; inset: 0; z-index: 2147483647;
+        display: grid; place-items: center;
+        background: #171717; color: #e9f3f0;
+        font-family: system-ui, sans-serif;
+        opacity: 1; transition: opacity 350ms ease-in-out;
+      }
+      #startup-splash.is-exiting { opacity: 0; pointer-events: none; }
+      .startup-content { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+      .startup-logo { width: 76px; height: 76px; animation: startup-arrive 650ms ease-out both; }
+      .startup-name { font-size: 16px; font-weight: 650; letter-spacing: .02em; animation: startup-arrive 750ms 100ms ease-out both; }
+      .startup-track { width: 132px; height: 3px; overflow: hidden; border-radius: 99px; background: #31504b; }
+      .startup-progress { width: 100%; height: 100%; border-radius: inherit; background: #4fe0c4; transform-origin: left; animation: startup-fill 1150ms ease-in-out both; }
+      @keyframes startup-arrive { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      @keyframes startup-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+      @media (prefers-reduced-motion: reduce) {
+        .startup-logo, .startup-name { animation: none; }
+        .startup-progress { animation-timing-function: linear; }
+      }
+    </style>
+    <script>performance.mark("gd:splash-start")</script>
   </head>
   <body>
+    <div id="startup-splash" role="status" aria-label="Loading GitDesktop">
+      <div class="startup-content">
+        <img class="startup-logo" src="/favicon.svg" alt="" />
+        <span class="startup-name">GitDesktop</span>
+        <div class="startup-track" aria-hidden="true"><div class="startup-progress"></div></div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
