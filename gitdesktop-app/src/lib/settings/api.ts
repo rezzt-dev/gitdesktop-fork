@@ -302,6 +302,12 @@ export const DIFF_VIEW_MODES = ["unified", "split"] as const;
 /** The layouts offered in the Changes panel's view toggle. */
 export const CHANGES_VIEW_MODES = ["list", "tree"] as const;
 
+/** Native webview zoom levels, in percent. Keep steps small for compact screens. */
+export const INTERFACE_ZOOM_LEVELS = [
+  80, 90, 100, 110, 120, 130, 140, 150,
+] as const;
+export type InterfaceZoom = (typeof INTERFACE_ZOOM_LEVELS)[number];
+
 export interface AppSettings {
   ai: AiSettings;
   /** Provider/model for AI PR review (independent of the commit model). */
@@ -433,6 +439,8 @@ export interface AppSettings {
    *  softer dark variant that lifts surfaces off pure black to reduce eye strain. Applied
    *  outside the bulk settings form (apply-on-change), like diffViewMode. */
   theme: ThemeSetting;
+  /** Whole-webview scale, including floating menus and dialogs. */
+  interfaceZoom: InterfaceZoom;
   diffViewMode: (typeof DIFF_VIEW_MODES)[number];
   /** Changes panel layout: flat list or compacted directory tree. Applied outside
    *  the bulk settings form (apply-on-change), like diffViewMode. */
@@ -528,6 +536,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   mcpServers: [],
   recentRepos: [],
   theme: "system",
+  interfaceZoom: 110,
   diffViewMode: "unified",
   changesViewMode: "list",
   collapsedConversationSections: [],
@@ -771,6 +780,9 @@ function healEnumerated(settings: AppSettings): AppSettings {
       DEFAULT_SETTINGS.autoFetchInterval,
     ),
     theme: pick(settings.theme, THEME_ORDER, DEFAULT_SETTINGS.theme),
+    interfaceZoom: INTERFACE_ZOOM_LEVELS.includes(settings.interfaceZoom)
+      ? settings.interfaceZoom
+      : DEFAULT_SETTINGS.interfaceZoom,
     diffViewMode: pick(
       settings.diffViewMode,
       DIFF_VIEW_MODES,

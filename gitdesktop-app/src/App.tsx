@@ -33,6 +33,7 @@ import {
 } from "@/lib/git/queries";
 import { useHotkeyAction, useHotkeysListener } from "@/lib/hotkeys/hotkeys";
 import { useModalGateOpen } from "@/lib/hotkeys/modal-gate";
+import { setInterfaceZoom } from "@/lib/interface-zoom";
 import { MCP_WRITABLE_STORES } from "@/lib/mcp-writable-stores";
 import {
   notificationsDraftOutOfSync,
@@ -66,8 +67,16 @@ function App() {
   const gitInstalled = useGitInstalled();
   const queryClient = useQueryClient();
   const settings = useSettings();
+  const interfaceZoom = settings.data?.interfaceZoom;
   const saveSettings = useSaveSettings();
   const applyTheme = useApplyTheme();
+
+  useEffect(() => {
+    if (interfaceZoom === undefined) return;
+    void setInterfaceZoom(interfaceZoom).catch(() => {
+      toast.error("Could not apply interface zoom");
+    });
+  }, [interfaceZoom]);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const pickAndOpen = usePickAndOpenRepo();
