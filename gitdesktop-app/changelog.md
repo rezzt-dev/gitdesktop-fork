@@ -30,6 +30,7 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 
 ### CHANGED
 
+- add a reusable `build-gitdesktop` command that installs locked dependencies, builds the Linux AppImage, and updates `~/.local/bin/gitdesktop` from any working directory.
 - Standardize primary, accent, focus-ring, and sidebar colors across light, dark, and Slate themes with a neutral palette for clearer contrast and consistent interface states.
 - Refine theme interaction states across light, dark, and Slate with shared semantic surface tokens, readable selection and focus treatments, responsive repository switching, and automated contrast regression coverage.
 - Add a persisted interface zoom setting in Settings → Appearance, adjustable from 80% to 150% in 10% steps, and apply it consistently to the native webview and browser preview.
