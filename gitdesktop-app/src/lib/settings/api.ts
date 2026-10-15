@@ -329,9 +329,6 @@ export interface AppSettings {
   hideAi: boolean;
   /** Which sources notify, and on which channels. */
   notifications: NotificationSettings;
-  /** Hide the app to the system tray on window close (so background work keeps
-   *  running) instead of quitting. */
-  closeToTray: boolean;
   /** Which agent CLI a new Session, Plan, or Research run starts on. Not in
    *  DEFAULT_SETTINGS — its absence is the meaningful "Auto" state: follow the
    *  main AI provider when that's an agent CLI, else Claude. Keyed to the local
@@ -495,7 +492,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
     },
     automationKinds: "all",
   },
-  closeToTray: true,
   agentIsolation: "worktree",
   agentImageNodeVersion: "24",
   agentImageProviders: ["claude", "codex"],

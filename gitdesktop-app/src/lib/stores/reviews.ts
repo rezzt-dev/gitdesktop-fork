@@ -379,7 +379,7 @@ function releaseSlot(lane: Limiter): void {
 }
 
 /** Announces a settled review — inbox row plus an OS ping when the window is
- *  hidden (close to tray) or unfocused, on whichever channels the `reviews`
+ *  hidden or unfocused, on whichever channels the `reviews`
  *  source has for this repo. Best-effort. */
 function notifyReviewDone(
   title: string,

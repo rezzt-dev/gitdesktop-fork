@@ -121,10 +121,6 @@ pub struct AppState {
     /// without an async accessor. The `Arc` lets that sweep task outlive the borrow of
     /// `self` that scheduled it.
     agent_cancels: Arc<AgentCancels>,
-    /// Whether closing the window hides the app to the tray (keeping it running)
-    /// instead of quitting. Mirrors the user's setting, pushed from the frontend;
-    /// defaults to true so the first close behaves correctly before that sync.
-    close_to_tray: AtomicBool,
     /// Whether the frontend holds writes parked offline. They live only in the
     /// webview's memory, so a quit discards them; pushed from the frontend, and
     /// false until it reports, which keeps quitting unguarded before that sync.
@@ -144,7 +140,6 @@ impl Default for AppState {
             shared_domains: Mutex::new(HashMap::new()),
             git_info: OnceCell::new(),
             agent_cancels: Arc::new(SyncMutex::new(HashMap::new())),
-            close_to_tray: AtomicBool::new(true),
             parked_writes: AtomicBool::new(false),
             quit_prompt_emitted_ms: AtomicU64::new(0),
             quit_prompt_acked: AtomicBool::new(false),
@@ -364,14 +359,6 @@ impl AppState {
                 sweep_unadopted_tombstone(&registry, &id);
             });
         }
-    }
-
-    pub fn close_to_tray(&self) -> bool {
-        self.close_to_tray.load(Ordering::Relaxed)
-    }
-
-    pub fn set_close_to_tray(&self, enabled: bool) {
-        self.close_to_tray.store(enabled, Ordering::Relaxed);
     }
 
     pub fn set_parked_writes(&self, parked: bool) {

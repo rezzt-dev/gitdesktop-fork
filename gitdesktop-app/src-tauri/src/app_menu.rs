@@ -215,8 +215,7 @@ fn handle_menu_event(app: &AppHandle, event: MenuEvent) {
         MenuTarget::Action(action) => ("app-menu-action", action),
         MenuTarget::Ignore => return,
     };
-    // Close-to-tray can leave the window hidden while the menu bar stays
-    // clickable, and a dialog raised in a hidden window is invisible.
+    // Focus the window before dispatching a menu action.
     crate::tray::show_main_window(app);
     let _ = app.emit(name, payload);
 }

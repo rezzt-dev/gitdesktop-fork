@@ -3520,9 +3520,7 @@ Open **Settings** from the header gear (or {{kbd:open-settings}}). Sections:
 
 - **General** — hide AI features (which also hides finished AI activity in the activity
   dock and notification inbox, mutes AI desktop notifications, and pauses your automations
-  until you show them again — your rules are kept), keep running in the **system tray** on
-  close (so background work continues; launching the app again while it's running —
-  tray-hidden or not — focuses the existing window), **automatically fetch from your
+  until you show them again — your rules are kept), **automatically fetch from your
   remotes** (a background fetch on an interval you pick — it never pulls, merges, or
   changes your files), **automatically stash and reapply on pull, merge, rebase, and branch
   updates** (an operation uncommitted changes would otherwise block recovers on its own,
@@ -3532,9 +3530,9 @@ Open **Settings** from the header gear (or {{kbd:open-settings}}). Sections:
   overridable per PR; pairs with *Review draft PRs when created* so a draft's automated
   first review waits until it's marked ready), **fetch link previews** (the title,
   description, and image behind a link in a rendered body; off leaves the card showing
-  the destination alone), and privacy options. If changes made offline are still waiting
-  to send, quitting from the tray or closing the window with the tray option off asks
-  before discarding them.
+  the destination alone), and privacy options. Closing the window quits the app. If
+  changes made offline are still waiting to send, closing the window or quitting from
+  the tray asks before discarding them.
 - **Appearance** — pick a theme: **System** (follows your OS's light/dark setting),
   **Light**, **Dark**, or **Slate** (a softer, blue-gray dark). Applies as you pick it,
   and *Cycle theme* in the command palette steps through them.

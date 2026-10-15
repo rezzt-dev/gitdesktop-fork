@@ -87,8 +87,7 @@ pub fn run() {
         // shown, and a saved "hidden" would reopen it invisible. The saves themselves
         // are driven from tray.rs — debounced on move/resize, plus one on close/quit —
         // because the plugin's own save-on-exit can't be relied on: `tauri dev` is
-        // usually killed rather than cleanly exited, and close-to-tray isn't a real
-        // close.
+        // usually killed rather than cleanly exited.
         .plugin(
             tauri_plugin_window_state::Builder::default()
                 .with_state_flags(tray::WINDOW_STATE_FLAGS)
@@ -761,7 +760,6 @@ pub fn run() {
             agent::agent_review,
             agent::agent_review_cancel,
             agent::agent_session,
-            tray::set_close_to_tray,
             tray::set_parked_writes,
             tray::quit_prompt_shown,
             tray::quit_prompt_closed,

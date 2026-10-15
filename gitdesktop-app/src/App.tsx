@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -159,14 +158,6 @@ function App() {
     track({ name: "screen_viewed", properties: { screen: view } });
   }, [view]);
 
-  // The backend owns the window-close behavior, so mirror the preference to it.
-  const closeToTray = settings.data?.closeToTray;
-  useEffect(() => {
-    if (closeToTray === undefined) return;
-    invoke("set_close_to_tray", { enabled: closeToTray }).catch(
-      () => undefined,
-    );
-  }, [closeToTray]);
   // The backend owns the quit decision too, which needs to know about parked
   // writes.
   useQuitGuard();

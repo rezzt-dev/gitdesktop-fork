@@ -67,9 +67,7 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
 }
 
 pub(crate) fn show_main_window(app: &AppHandle) {
-    // `None` is unreachable today: close-to-tray HIDES "main" (never destroys
-    // it), so the window always exists while the process runs. If the app ever
-    // closes + recreates the window, this silently no-ops — recreate it here.
+    // The main window remains available while a quit confirmation is open.
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.show();
         let _ = window.unminimize();
@@ -140,46 +138,27 @@ fn exit_now(app: &AppHandle) {
 
 /// Quits, unless the frontend holds writes parked offline: those live only in
 /// the webview's memory, so the request shows the window and asks there instead
-/// (the rule is [`crate::state::quit_decision`]). Returns whether the app is
-/// exiting.
-fn request_quit(app: &AppHandle) -> bool {
+/// (the rule is [`crate::state::quit_decision`]).
+fn request_quit(app: &AppHandle) {
     match app.state::<AppState>().begin_quit(monotonic_ms()) {
-        QuitDecision::Exit => {
-            exit_now(app);
-            true
-        }
+        QuitDecision::Exit => exit_now(app),
         QuitDecision::PromptNew => {
             show_main_window(app);
             let _ = app.emit("quit-requested", ());
-            false
         }
-        QuitDecision::Reshow => {
-            show_main_window(app);
-            false
-        }
+        QuitDecision::Reshow => show_main_window(app),
     }
 }
 
-/// Move/resize events schedule a debounced geometry save. On window close,
-/// hide to the tray (keeping the app — and any in-flight review — running)
-/// when the user's "close to tray" preference is on. When it's off, the close
+/// Move/resize events schedule a debounced geometry save. Closing the window
 /// quits through the same parked-writes check as the tray "Quit".
 pub fn handle_window_event(window: &Window, event: &WindowEvent) {
     match event {
         WindowEvent::CloseRequested { api, .. } => {
-            // Final flush for movement the debounce below hasn't caught yet — a
-            // close-to-tray hide isn't a real close, so nothing else captures it.
-            if window.state::<AppState>().close_to_tray() {
-                save_geometry(window.app_handle());
-                let _ = window.hide();
-                api.prevent_close();
-            } else if !request_quit(window.app_handle()) {
-                // No tray-resident lifetime is wanted, so the quit is explicit
-                // rather than last-window-closed auto-exit (a tray icon can keep
-                // the event loop alive). Deferred to the confirm, the close must be
-                // prevented or it destroys the only window, leaving just the tray.
-                api.prevent_close();
-            }
+            // Keep the window alive if parked writes need confirmation. Quitting
+            // explicitly also ensures the tray cannot retain the process.
+            api.prevent_close();
+            request_quit(window.app_handle());
         }
         WindowEvent::Moved(_) | WindowEvent::Resized(_) => {
             // Debounce behind a per-event timer task, gated on an epoch counter so
@@ -203,13 +182,6 @@ pub fn handle_window_event(window: &Window, event: &WindowEvent) {
         }
         _ => {}
     }
-}
-
-/// Mirrors the frontend's "close to tray" setting into the backend, which owns
-/// the window-close decision.
-#[tauri::command]
-pub fn set_close_to_tray(state: State<AppState>, enabled: bool) {
-    state.set_close_to_tray(enabled);
 }
 
 /// Mirrors whether the frontend holds writes parked offline, which the quit

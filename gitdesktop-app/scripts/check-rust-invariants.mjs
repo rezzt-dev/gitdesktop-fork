@@ -243,11 +243,6 @@ const SYNC_COMMAND_ALLOWLIST = [
     fn: "pty_close",
     rationale: "drops an in-memory PTY handle behind a mutex",
   },
-  {
-    file: "tray.rs",
-    fn: "set_close_to_tray",
-    rationale: "flips one in-memory AppState flag",
-  },
 ];
 
 // Check D. Sites whose git command provably reports on stderr alone, verified by
