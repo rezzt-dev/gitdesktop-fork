@@ -20,7 +20,6 @@ import { suppressContextMenu } from "@/lib/context-menu";
 import { openWithDefault } from "@/lib/git/api";
 import { useRovingRows } from "@/lib/list-keyboard-nav";
 import { toastError } from "@/lib/toast";
-import { cn } from "@/lib/utils";
 import { type FolderEntry, folderRows } from "./model";
 import { changeLibrary, foldersKey, useFolderLibrary } from "./store";
 
@@ -89,7 +88,7 @@ export function FolderTree({
   }
   return (
     <div className="flex min-h-0 flex-col">
-      <div className="p-2">
+      <div className="shrink-0 p-2">
         <Input
           aria-label="Filter folders and repositories"
           placeholder="Filter folders and repositories"
@@ -115,7 +114,7 @@ export function FolderTree({
               role="tree"
               aria-label="Repository folders"
               aria-busy={library.isFetching || opening}
-              className="max-h-80 overflow-auto"
+              className="max-h-80 min-h-0 flex-1 overflow-auto overscroll-contain"
               onKeyDown={onRowKeyDown}
               onContextMenuCapture={(event) => {
                 const path = (event.target as HTMLElement)
@@ -145,11 +144,7 @@ export function FolderTree({
                 aria-selected={selectedPath === entry.path}
                 {...rowProps(entry)}
                 disabled={disabled || opening}
-                className={cn(
-                  "flex w-full min-w-0 items-center gap-2 py-2 pr-3 text-left text-xs hover:bg-accent focus-visible:bg-accent focus-visible:outline-none disabled:opacity-50",
-                  selectedPath === entry.path &&
-                    "bg-accent text-accent-foreground",
-                )}
+                className="interactive-row flex w-full min-w-0 items-center gap-2 py-2 pr-3 text-left text-xs disabled:opacity-50"
                 style={{ paddingLeft: 12 + entry.depth * 16 }}
                 title={entry.path}
                 onClick={() => void activate(entry)}

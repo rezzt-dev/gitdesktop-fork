@@ -150,7 +150,7 @@ export function RepoSwitcher() {
             sideOffset={4}
             className="isolate z-50"
           >
-            <Popover.Popup className="w-80 rounded-none bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10">
+            <Popover.Popup className="flex max-h-(--available-height) w-80 max-w-(--available-width) flex-col overflow-y-auto overscroll-contain rounded-none bg-popover text-popover-foreground shadow-md ring-1 ring-border">
               <RepoList
                 currentPath={pickerCurrentPath}
                 onOpened={() => setOpen(false)}
@@ -163,7 +163,7 @@ export function RepoSwitcher() {
                   setRemoveTarget(repo);
                 }}
               />
-              <div className="border-t py-1">
+              <div className="shrink-0 border-t py-1">
                 <ActionRow
                   icon={FolderOpenIcon}
                   onClick={() => {

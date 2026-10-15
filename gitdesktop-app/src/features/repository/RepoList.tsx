@@ -731,6 +731,7 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
         <Button
           size="sm"
           variant="ghost"
+          className="aria-pressed:bg-accent aria-pressed:text-accent-foreground aria-pressed:font-medium"
           aria-pressed={!folders}
           onClick={() => setView("recent")}
         >
@@ -739,6 +740,7 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
         <Button
           size="sm"
           variant="ghost"
+          className="aria-pressed:bg-accent aria-pressed:text-accent-foreground aria-pressed:font-medium"
           aria-pressed={folders}
           onClick={() => setView("folders")}
         >

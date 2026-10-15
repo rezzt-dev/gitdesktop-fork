@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source("./");
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/jetbrains-mono";
@@ -57,127 +57,87 @@
 }
 
 :root {
-  /* Native controls (scrollbars, form fields, the webview's default canvas)
-     follow `color-scheme`, so driving it from the theme class — not the OS —
-     keeps them in sync when the user forces a theme against their OS setting. */
+  /* Surface → interaction → ink. Hover/selection never invert the text polarity:
+     secondary labels, paths and status icons must stay readable inside a row. */
   color-scheme: light;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.23 0 0);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  /* Dark neutral keeps primary text and icons legible on light surfaces. */
-  --primary: oklch(0.25 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.516 0 0);
-  --accent: #ececec;
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --success: oklch(0.55 0.13 150);
-  --warning: oklch(0.62 0.13 65);
-  --info: oklch(0.52 0.16 250);
-  --merged: oklch(0.53 0.2 300);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.35 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.42 0.075 165);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--secondary);
+  --muted-foreground: oklch(0.46 0 0);
+  --accent: oklch(0.925 0.018 165);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.53 0.21 27);
+  --success: oklch(0.46 0.1 150);
+  --warning: oklch(0.46 0.1 65);
+  --info: oklch(0.48 0.14 250);
+  --merged: oklch(0.5 0.18 300);
+  --border: oklch(0.87 0 0);
+  --input: oklch(0.62 0 0);
+  --ring: oklch(0.46 0.075 165);
+  --chart-1: oklch(0.42 0.075 165);
+  --chart-2: oklch(0.48 0.14 250);
+  --chart-3: oklch(0.5 0.18 300);
+  --chart-4: oklch(0.46 0.1 65);
+  --chart-5: oklch(0.46 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.25 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: #ececec;
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.35 0 0);
+  --sidebar: oklch(0.965 0 0);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+  --selection: var(--accent);
+  --selection-foreground: var(--accent-foreground);
 }
 
 .dark {
   color-scheme: dark;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #ececec;
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.715 0 0);
-  --accent: #ececec;
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --success: oklch(0.8 0.17 150);
-  --warning: oklch(0.83 0.15 75);
-  --info: oklch(0.72 0.15 250);
-  --merged: oklch(0.75 0.16 305);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #ececec;
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: #ececec;
-  --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: #ececec;
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #ececec;
+  --background: oklch(0.17 0 0);
+  --foreground: oklch(0.92 0 0);
+  --card: oklch(0.215 0 0);
+  --primary: oklch(0.8 0.085 165);
+  --primary-foreground: oklch(0.19 0 0);
+  --secondary: oklch(0.265 0 0);
+  --muted-foreground: oklch(0.74 0 0);
+  --accent: oklch(0.31 0.014 165);
+  --destructive: oklch(0.77 0.14 22);
+  --success: oklch(0.8 0.13 150);
+  --warning: oklch(0.83 0.12 75);
+  --info: oklch(0.77 0.115 250);
+  --merged: oklch(0.79 0.125 305);
+  --border: oklch(0.34 0 0);
+  --input: oklch(0.5 0 0);
+  --ring: oklch(0.8 0.085 165);
+  --chart-1: var(--primary);
+  --chart-2: var(--info);
+  --chart-3: var(--merged);
+  --chart-4: var(--warning);
+  --chart-5: var(--muted-foreground);
+  --sidebar: oklch(0.195 0 0);
 }
 
-/* "Slate" — a softer dark theme (Settings → Appearance) in the style of GitHub's
-   "Dark dimmed": a lifted, cool blue-gray canvas (hue ~257 — a NEUTRAL cool,
-   deliberately NOT the mint brand hue, so the chrome never reads as tinted toward
-   the brand) with cool off-white ink, plus accent colors desaturated so bright
-   status badges stop vibrating on the softer field. Foreground↔background lands
-   at ~11:1 (vs the default Dark's ~19:1), inside the dark-mode comfort band.
-   Applied as `.dark.slate` so every `.dark`-keyed style (shiki, recharts, the
-   diff viewer, and `dark:` utilities) keeps working; `.slate` is only ever set
-   alongside `.dark` (see theme.ts). Surface values are the resolved OKLCH of
-   #1c2128 / #22272e / #2d333b / #d1d7e0. */
+/* Slate keeps the same semantic contracts on a softer, cool neutral ramp.
+   It always accompanies .dark so editors and dark-keyed utilities stay in sync. */
 .dark.slate {
-  /* Cool, lifted neutral ramp (bg → card → muted). */
   --background: oklch(0.245 0.015 257);
+  --foreground: oklch(0.9 0.014 258);
   --card: oklch(0.285 0.015 257);
-  --popover: oklch(0.285 0.015 257);
   --secondary: oklch(0.33 0.016 257);
-  --muted: oklch(0.33 0.016 257);
-  --sidebar: oklch(0.285 0.015 257);
-  /* Cool off-white ink + a legible cool-gray for secondary text. */
-  --foreground: oklch(0.877 0.014 258);
-  --card-foreground: oklch(0.877 0.014 258);
-  --popover-foreground: oklch(0.877 0.014 258);
-  --secondary-foreground: oklch(0.877 0.014 258);
-  --muted-foreground: oklch(0.69 0.02 255);
-  --sidebar-foreground: oklch(0.877 0.014 258);
-  --accent-foreground: oklch(0.205 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --accent: #ececec;
-  --sidebar-accent: #ececec;
-  --primary: #ececec;
-  --sidebar-primary: #ececec;
-  --ring: #ececec;
-  --sidebar-ring: #ececec;
-  /* Semantic state colors, desaturated so they don't glow on the lighter field. */
-  --success: oklch(0.78 0.13 150);
-  --warning: oklch(0.8 0.12 75);
-  --info: oklch(0.72 0.115 250);
-  --merged: oklch(0.74 0.125 305);
-  --destructive: oklch(0.7 0.155 22);
+  --muted-foreground: oklch(0.76 0.014 255);
+  --accent: oklch(0.365 0.023 257);
+  --border: oklch(0.41 0.016 257);
+  --input: oklch(0.55 0.016 257);
+  --sidebar: oklch(0.265 0.015 257);
 }
 
 /* Shiki diff/JSON token colors. The Shiki theme (features/diff/shiki-theme.ts)
@@ -223,12 +183,46 @@
   body {
     @apply bg-background text-foreground;
   }
+  ::selection {
+    background: var(--selection);
+    color: var(--selection-foreground);
+  }
   html {
     @apply font-mono;
     /* JetBrains Mono ships programming ligatures on, and this rule puts the whole
        document in it: literal text the app must render verbatim (`--flag`, `->`,
        `!=`, `::` in diffs and inputs) would otherwise compose into one glyph. */
     font-variant-ligatures: none;
+  }
+}
+
+/* Base UI highlights can use virtual focus. Style that state as well as
+   native :focus without overriding destructive-item semantics. */
+@layer components {
+  :is(
+    [data-slot^="dropdown-menu-"],
+    [data-slot^="context-menu-"],
+    [data-slot^="menubar-"]
+  )[data-highlighted]:not([data-disabled]):not([data-variant="destructive"]) {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+/* Shared custom-list contract: selection persists while keyboard focus remains
+   independently visible. Disabled rows cannot pick up a hover affordance. */
+@utility interactive-row {
+  outline-offset: -2px;
+  &:not(:disabled):hover {
+    background-color: var(--muted);
+    color: var(--foreground);
+  }
+  &[aria-selected="true"] {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--ring);
   }
 }
 

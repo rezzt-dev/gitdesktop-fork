@@ -1,0 +1,1 @@
+- corregir el contraste de filas, iconos y menús en los temas claro, oscuro y slate, unificar las variables de superficies y estados, distinguir selección y foco de teclado, e indicar la vista activa del selector de repositorios manteniéndolo dentro de la ventana.
