@@ -39,6 +39,7 @@ under `changelog.d/` (see its README); those are assembled here at release time 
 - Remove zoom-in and zoom-out transitions from menus, dialogs, popovers, tooltips, and related overlays so interface scaling remains stable across compact displays.
 - Disable AI features in this distribution and persist `hideAi` so legacy settings cannot reactivate AI providers, reviews, automations, or related UI.
 - Limit Settings → About diagnostics to Git, GitHub CLI, and GitLab CLI, and update the product and troubleshooting documentation to describe the manual workflow.
+- Replace the legacy application icon across the interface and regenerate the Tauri assets for desktop, Android, and iOS bundles from `app-icon.svg`.
 
 - reorganize the fork so the application source, tooling, dependencies and technical documentation live under `gitdesktop-app/`, while repository documentation and github automation remain at the root; keep upstream references outside the operational project tree.
 
