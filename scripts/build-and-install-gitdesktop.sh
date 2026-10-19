@@ -2,8 +2,10 @@
 
 set -Eeuo pipefail
 
-readonly REPOSITORY_DIR="/home/rezzt/repositorios/desktop-projects/gitdesktop-fork/gitdesktop-app"
-readonly APPIMAGE_SOURCE="${REPOSITORY_DIR}/src-tauri/target/release/bundle/appimage/GitDesktop_0.13.5_amd64.AppImage"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPOSITORY_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+readonly APP_DIR="${REPOSITORY_DIR}/gitdesktop-app"
+readonly APPIMAGE_SOURCE="${APP_DIR}/src-tauri/target/release/bundle/appimage/GitDesktop_0.13.5_amd64.AppImage"
 readonly INSTALL_DIR="${HOME}/Applications"
 readonly INSTALL_PATH="${INSTALL_DIR}/GitDesktop_0.13.5_amd64_localbuild.AppImage"
 readonly COMMAND_PATH="${HOME}/.local/bin/gitdesktop"
@@ -19,9 +21,10 @@ fail() {
 
 command -v pnpm >/dev/null 2>&1 || fail "No se encontró pnpm en PATH."
 [[ -d "${REPOSITORY_DIR}" ]] || fail "No existe el repositorio: ${REPOSITORY_DIR}"
+[[ -d "${APP_DIR}" ]] || fail "No existe el directorio de la app: ${APP_DIR}"
 
 log "Instalando dependencias bloqueadas..."
-cd "${REPOSITORY_DIR}"
+cd "${APP_DIR}"
 pnpm install --frozen-lockfile
 
 log "Compilando GitDesktop para Linux..."

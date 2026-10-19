@@ -1,0 +1,1 @@
+- add a reusable `build-gitdesktop` command that installs locked dependencies, builds the Linux AppImage, and updates `~/.local/bin/gitdesktop` from any working directory.
