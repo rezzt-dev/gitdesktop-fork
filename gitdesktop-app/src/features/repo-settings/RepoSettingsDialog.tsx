@@ -3,9 +3,19 @@ import {
   BroadcastIcon,
   CaretLeftIcon,
   ClockCounterClockwiseIcon,
+  ClockIcon,
+  GlobeIcon,
+  HeartIcon,
+  KeyIcon,
+  LockKeyIcon,
   PencilSimpleIcon,
   PlusIcon,
+  RocketLaunchIcon,
+  ShieldCheckIcon,
+  SlidersHorizontalIcon,
   TrashIcon,
+  UsersIcon,
+  WarningIcon,
 } from "@phosphor-icons/react";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { type ComponentType, useLayoutEffect, useState } from "react";
@@ -261,10 +271,41 @@ const BITBUCKET_RAIL_GROUPS: NavRailGroup[] = [
   },
 ];
 
+/** One glyph per section id, shared across every provider rail so the same
+ *  bucket reads the same whichever forge backs the repo (and so General/Access
+ *  echo the main Settings rail). Keyed by id, not label: GitLab's "Members" and
+ *  Bitbucket's "Default reviewers" both sit on `access`. */
+const SECTION_ICONS: Record<SectionId, ComponentType> = {
+  general: SlidersHorizontalIcon,
+  access: UsersIcon,
+  rules: ShieldCheckIcon,
+  security: LockKeyIcon,
+  pages: GlobeIcon,
+  sponsor: HeartIcon,
+  secrets: KeyIcon,
+  schedules: ClockIcon,
+  environments: RocketLaunchIcon,
+  webhooks: BroadcastIcon,
+  danger: WarningIcon,
+};
+
+/** Inject each item's section glyph into a provider's rail groups once, at
+ *  module load. Items keep their provider-specific labels; only the icon is
+ *  added. */
+function withSectionIcons(groups: NavRailGroup[]): NavRailGroup[] {
+  return groups.map((group) => ({
+    ...group,
+    items: group.items.map((item) => {
+      const Icon = SECTION_ICONS[item.id as SectionId];
+      return Icon ? { ...item, icon: <Icon /> } : item;
+    }),
+  }));
+}
+
 const PROVIDER_RAIL_GROUPS: Record<ForgeProvider, NavRailGroup[]> = {
-  github: RAIL_GROUPS,
-  gitlab: GITLAB_RAIL_GROUPS,
-  bitbucket: BITBUCKET_RAIL_GROUPS,
+  github: withSectionIcons(RAIL_GROUPS),
+  gitlab: withSectionIcons(GITLAB_RAIL_GROUPS),
+  bitbucket: withSectionIcons(BITBUCKET_RAIL_GROUPS),
 };
 
 /** The sections each provider's rail actually offers — a section remembered

@@ -44,6 +44,7 @@ import {
   literalPathspec,
 } from "@/lib/git/glob";
 import {
+  forgeReady,
   useAppendRepoAiIgnore,
   useAppendToGitignore,
   useBranchAheadCount,
@@ -61,7 +62,11 @@ import {
   useWorkingLineStats,
 } from "@/lib/git/queries";
 import { reservedDeviceName } from "@/lib/git/reserved-device-name";
-import type { ChangeKind, FileEntry } from "@/lib/git/types";
+import {
+  type ChangeKind,
+  type FileEntry,
+  providerLabel,
+} from "@/lib/git/types";
 import { formatBinding } from "@/lib/hotkeys/binding";
 import { useHotkeyAction } from "@/lib/hotkeys/hotkeys";
 import { listKeyboardNav } from "@/lib/list-keyboard-nav";
@@ -373,17 +378,18 @@ export function ChangesPanel({
     return (staged ? stagedStats : unstagedStats).get(entry.path);
   }
 
-  // Empty-state suggestions: a published repo offers "View on GitHub"; a
+  // Empty-state suggestions: a published repo offers "View on <forge>"; a
   // branch with commits the default branch doesn't have offers a PR. The
   // comparison only runs while the tree is clean, so the daily loop never
   // pays for it.
   const gh = useForgeStatus(repoPath);
-  // The empty-state "View on GitHub" suggestion is GitHub-only (a web link).
-  // The "Open pull request" suggestion is gated on proposeCount alone — it routes
-  // to the Compare tab, whose create affordance is provider-aware (GitHub + GitLab).
-  const ghReady =
-    Boolean(gh.data?.installed && gh.data?.authenticated && gh.data?.repo) &&
-    gh.data?.provider === "github";
+  // The empty-state "View on <forge>" suggestion is a web link, so it rides the
+  // provider-neutral readiness gate — `forge_repo_url` resolves the repo page on
+  // GitHub, GitLab and Bitbucket alike, and the button names whichever one backs
+  // this repo. The "Open pull request" suggestion is gated on proposeCount alone —
+  // it routes to the Compare tab, whose create affordance is provider-aware.
+  const ghReady = forgeReady(gh.data);
+  const forgeLabel = providerLabel(gh.data?.provider);
   const defaultBranch = useDefaultBranch(repoPath);
   const branch = status.data?.branch;
   const currentName = branch?.name ?? null;
@@ -1595,6 +1601,7 @@ export function ChangesPanel({
           repoPath={repoPath}
           isUnborn={isUnborn}
           ghReady={ghReady}
+          forgeLabel={forgeLabel}
           proposeCount={proposeCount}
           currentName={currentName}
           defaultName={defaultName}

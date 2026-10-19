@@ -56,6 +56,33 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Elevation. Crisp, low-spread shadows tuned to the flat, ring-separated
+   surface language: floating surfaces (menus, popovers, dialogs, selects,
+   drawers) read as lifted without the soft "material" blobs that would fight
+   the square, terminal aesthetic. The existing `shadow-sm/md/lg/xl` utilities
+   already on every overlay pick these up, so depth lands app-wide with no
+   component edits. Each layer references a per-theme shadow ink
+   (`--gd-shadow-weak` / `--gd-shadow-strong`, defined under :root and .dark)
+   so the same utility deepens appropriately against a dark canvas. */
+@theme {
+  --shadow-2xs: 0 1px 1px -1px var(--gd-shadow-weak);
+  --shadow-xs: 0 1px 2px -1px var(--gd-shadow-weak);
+  --shadow-sm:
+    0 1px 2px -1px var(--gd-shadow-weak), 0 2px 4px -2px var(--gd-shadow-weak);
+  --shadow-md:
+    0 2px 4px -2px var(--gd-shadow-weak),
+    0 6px 14px -4px var(--gd-shadow-strong);
+  --shadow-lg:
+    0 4px 8px -3px var(--gd-shadow-strong),
+    0 14px 32px -8px var(--gd-shadow-strong);
+  --shadow-xl:
+    0 8px 18px -6px var(--gd-shadow-strong),
+    0 28px 56px -12px var(--gd-shadow-strong);
+  --shadow-2xl:
+    0 12px 28px -8px var(--gd-shadow-strong),
+    0 40px 80px -16px var(--gd-shadow-strong);
+}
+
 :root {
   /* Surface → interaction → ink. Hover/selection never invert the text polarity:
      secondary labels, paths and status icons must stay readable inside a row. */
@@ -66,23 +93,25 @@
   --card-foreground: var(--foreground);
   --popover: var(--card);
   --popover-foreground: var(--foreground);
-  --primary: oklch(0.42 0.075 165);
+  --primary: oklch(0.43 0.095 165);
   --primary-foreground: oklch(0.99 0 0);
   --secondary: oklch(0.95 0 0);
   --secondary-foreground: var(--foreground);
   --muted: var(--secondary);
   --muted-foreground: oklch(0.46 0 0);
-  --accent: oklch(0.925 0.018 165);
+  --accent: oklch(0.922 0.035 165);
   --accent-foreground: var(--foreground);
   --destructive: oklch(0.53 0.21 27);
   --success: oklch(0.46 0.1 150);
   --warning: oklch(0.46 0.1 65);
   --info: oklch(0.48 0.14 250);
   --merged: oklch(0.5 0.18 300);
-  --border: oklch(0.87 0 0);
-  --input: oklch(0.62 0 0);
-  --ring: oklch(0.46 0.075 165);
-  --chart-1: oklch(0.42 0.075 165);
+  --border: oklch(0.88 0 0);
+  --input: oklch(0.63 0 0);
+  --ring: oklch(0.5 0.11 165);
+  --chart-1: oklch(0.43 0.095 165);
+  --gd-shadow-weak: oklch(0.21 0.02 260 / 0.07);
+  --gd-shadow-strong: oklch(0.21 0.02 260 / 0.12);
   --chart-2: oklch(0.48 0.14 250);
   --chart-3: oklch(0.5 0.18 300);
   --chart-4: oklch(0.46 0.1 65);
@@ -105,11 +134,11 @@
   --background: oklch(0.17 0 0);
   --foreground: oklch(0.92 0 0);
   --card: oklch(0.215 0 0);
-  --primary: oklch(0.8 0.085 165);
+  --primary: oklch(0.82 0.1 165);
   --primary-foreground: oklch(0.19 0 0);
   --secondary: oklch(0.265 0 0);
   --muted-foreground: oklch(0.74 0 0);
-  --accent: oklch(0.31 0.014 165);
+  --accent: oklch(0.33 0.03 165);
   --destructive: oklch(0.77 0.14 22);
   --success: oklch(0.8 0.13 150);
   --warning: oklch(0.83 0.12 75);
@@ -117,7 +146,9 @@
   --merged: oklch(0.79 0.125 305);
   --border: oklch(0.34 0 0);
   --input: oklch(0.5 0 0);
-  --ring: oklch(0.8 0.085 165);
+  --ring: oklch(0.82 0.11 165);
+  --gd-shadow-weak: oklch(0 0 0 / 0.44);
+  --gd-shadow-strong: oklch(0 0 0 / 0.6);
   --chart-1: var(--primary);
   --chart-2: var(--info);
   --chart-3: var(--merged);

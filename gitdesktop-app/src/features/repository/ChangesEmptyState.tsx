@@ -31,14 +31,15 @@ import { toastError } from "@/lib/toast";
 /**
  * The clean-working-tree view of the Changes panel: first-commit guidance for an
  * unborn repo, otherwise the "all caught up" actions — open a PR when ahead of
- * the default branch, view on GitHub, open in the editor/terminal, view history.
- * Reads its own editor/terminal settings and navigation actions; the parent
- * passes only the change-specific signals it has already computed.
+ * the default branch, view the repo on its forge, open in the editor/terminal,
+ * view history. Reads its own editor/terminal settings and navigation actions;
+ * the parent passes only the change-specific signals it has already computed.
  */
 export function ChangesEmptyState({
   repoPath,
   isUnborn,
   ghReady,
+  forgeLabel,
   proposeCount,
   currentName,
   defaultName,
@@ -46,6 +47,9 @@ export function ChangesEmptyState({
   repoPath: string;
   isUnborn: boolean;
   ghReady: boolean;
+  /** The forge backing this repo ("GitHub" | "GitLab" | "Bitbucket"), naming the
+   *  "View on <forge>" action so it reads true on every provider. */
+  forgeLabel: string;
   proposeCount: number;
   currentName: string | null;
   defaultName: string | null;
@@ -95,7 +99,6 @@ export function ChangesEmptyState({
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer"
               onClick={() =>
                 forgeRepoUrl(repoPath)
                   .then((url) => openUrl(url))
@@ -103,7 +106,7 @@ export function ChangesEmptyState({
               }
             >
               <ArrowSquareOutIcon data-icon="inline-start" />
-              View on GitHub
+              View on {forgeLabel}
             </Button>
           )}
           {editorPath ? (

@@ -1,4 +1,17 @@
-import { ArrowLeftIcon } from "@phosphor-icons/react";
+import {
+  ArrowLeftIcon,
+  ArrowsClockwiseIcon,
+  BellIcon,
+  BracketsCurlyIcon,
+  CodeIcon,
+  GitBranchIcon,
+  InfoIcon,
+  KeyboardIcon,
+  PaletteIcon,
+  SlidersHorizontalIcon,
+  TerminalIcon,
+  UsersIcon,
+} from "@phosphor-icons/react";
 import { useSelector } from "@tanstack/react-store";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -55,17 +68,17 @@ const SyntaxSection = lazy(() =>
 );
 
 const PANELS = [
-  { id: "general", label: "General" },
-  { id: "appearance", label: "Appearance" },
-  { id: "notifications", label: "Notifications" },
-  { id: "keyboard", label: "Keyboard" },
-  { id: "accounts", label: "Accounts" },
-  { id: "git", label: "Git" },
-  { id: "syntax", label: "Syntax" },
-  { id: "editor", label: "External editor" },
-  { id: "terminal", label: "Terminal" },
-  { id: "updates", label: "Updates" },
-  { id: "about", label: "About" },
+  { id: "general", label: "General", Icon: SlidersHorizontalIcon },
+  { id: "appearance", label: "Appearance", Icon: PaletteIcon },
+  { id: "notifications", label: "Notifications", Icon: BellIcon },
+  { id: "keyboard", label: "Keyboard", Icon: KeyboardIcon },
+  { id: "accounts", label: "Accounts", Icon: UsersIcon },
+  { id: "git", label: "Git", Icon: GitBranchIcon },
+  { id: "syntax", label: "Syntax", Icon: BracketsCurlyIcon },
+  { id: "editor", label: "External editor", Icon: CodeIcon },
+  { id: "terminal", label: "Terminal", Icon: TerminalIcon },
+  { id: "updates", label: "Updates", Icon: ArrowsClockwiseIcon },
+  { id: "about", label: "About", Icon: InfoIcon },
 ] as const;
 
 type PanelId = (typeof PANELS)[number]["id"];
@@ -111,7 +124,15 @@ export function SettingsScreen() {
   // Old deep links to removed sections land on General.
   const activePanel = PANELS.some((p) => p.id === panel) ? panel : "general";
   const railGroups = useMemo(
-    () => [{ items: PANELS.map((p) => ({ id: p.id, label: p.label })) }],
+    () => [
+      {
+        items: PANELS.map((p) => ({
+          id: p.id,
+          label: p.label,
+          icon: <p.Icon />,
+        })),
+      },
+    ],
     [],
   );
 

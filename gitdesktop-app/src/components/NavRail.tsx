@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { listKeyboardNav } from "@/lib/list-keyboard-nav";
 import { cn } from "@/lib/utils";
@@ -5,6 +6,10 @@ import { cn } from "@/lib/utils";
 export interface NavRailItem {
   id: string;
   label: string;
+  /** Optional leading glyph (a Phosphor icon). Inherits the row's current
+   *  color, so it tracks the muted / hover / active ink with no extra wiring.
+   *  Callers that pass none keep the plain text rail unchanged. */
+  icon?: ReactNode;
   /** Render in the destructive palette (e.g. a Danger zone entry). */
   destructive?: boolean;
 }
@@ -79,7 +84,7 @@ export function NavRail({
                 aria-current={active ? "page" : undefined}
                 onClick={() => onSelect(item.id)}
                 className={cn(
-                  "block w-full px-2 py-1.5 text-left text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                  "flex w-full items-center gap-2 px-2 py-1.5 text-left text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
                   active
                     ? item.destructive
                       ? "bg-destructive/10 font-medium text-destructive"
@@ -89,7 +94,18 @@ export function NavRail({
                       : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
                 )}
               >
-                {item.label}
+                {item.icon && (
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "flex size-4 shrink-0 items-center justify-center *:size-4 transition-opacity",
+                      !active && "opacity-80",
+                    )}
+                  >
+                    {item.icon}
+                  </span>
+                )}
+                <span className="min-w-0 truncate">{item.label}</span>
               </button>
             );
           })}
