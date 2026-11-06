@@ -10,6 +10,8 @@
 - anadir `changelog.md` en la raiz como registro bilingue del fork; los cambios de la app siguen en `gitdesktop-app/changelog.d/`
 
 #### CAMBIADO
+
+- completar las guías de gestión y el contexto específico del proyecto; conservar las reglas técnicas y verificar las rutas
 - rehacer `claude.md` y `agents.md` con la estructura real del fork, la relacion con el upstream y el resumen de las guias
 
 #### ELIMINADO
@@ -23,6 +25,8 @@
 - add a root `changelog.md` as the fork's bilingual record; app changes stay in `gitdesktop-app/changelog.d/`
 
 #### CHANGED
+
+- complete repository management guides and project-specific context; preserve technical rules and verify paths
 - rewrite `claude.md` and `agents.md` with the fork's real layout, the upstream relationship and the guides digest
 
 #### REMOVED

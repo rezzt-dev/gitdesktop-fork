@@ -1,49 +1,136 @@
-# gitdesktop-fork — Agent Guide
+# GITDESKTOP-FORK: REPOSITORY GUIDE
 
-> **gitdesktop-fork** is a personal fork of **GitDesktop** (<https://github.com/theBGuy/GitDesktop>, Apache-2.0, by theBGuy), a keyboard-first desktop Git client built with Tauri 2 + React 19. The fork keeps the upstream application, disables and hides every AI feature, and adds its own work: repository folders, batch repository sync, a configurable interface zoom, a refined theme and a local build-and-install script.
+customized desktop git client based on github desktop. this guide covers the repository; nested agent instructions apply within their own folders.
+
+## PROJECT OVERVIEW
+
+| property | verified value |
+| --- | --- |
+| repository | `rezzt-dev/gitdesktop-fork` |
+| active source | `gitdesktop-app/` |
+| development base for this change | `main` |
+| remote default branch | `main` |
+| version source | `gitdesktop-app/package.json`: `0.13.5`; `gitdesktop-app/site/package.json`: `0.0.0` |
+| continuous integration | `.github/workflows/appimage-check.yml`, `.github/workflows/changelog.yml`, `.github/workflows/frontend.yml`, `.github/workflows/homebrew.yml`, `.github/workflows/quality.yml`, `.github/workflows/release.yml`, `.github/workflows/rust-tests.yml`, `.github/workflows/site-rebuild.yml`, `.github/workflows/site-scheduled-publish.yml`, `.github/workflows/site.yml` |
+
+## TECHNOLOGY STACK
+
+- `gitdesktop-app/package.json`: `react` ^19.3.0, `tailwindcss` ^4.3.3, `typescript` ~6.0.3, `vite` ^8.3.1
+- `gitdesktop-app/site/package.json`: `astro` ^7.3.5, `tailwindcss` ^4.3.3, `vite` ^8.2.1
+
+## PROJECT STRUCTURE
+
+- `changelog.md`
+- `gitdesktop-app/`
+- `license.md`
+- `readme.md`
+- `scripts/`
+- `security.md`
+
+management documentation lives in `.docs/manager.md`, `.docs/-github-guides/` and `.docs/repo-audit-and-fix.md`. keep this file and `claude.md` consistent.
+
+## BUILD, RUN AND TEST COMMANDS
+
+from `gitdesktop-app/`, the available package scripts are:
+
+| command | implementation |
+| --- | --- |
+| `pnpm run dev` | `vite` |
+| `pnpm run build` | `tsc -b && vite build` |
+| `pnpm run lint` | `biome check --write ./src/ ./site/` |
+| `pnpm run checks` | `node scripts/check-banned-patterns.mjs && node scripts/check-rust-invariants.mjs && node scripts/check-og-cards.mjs && node scripts/check-dead-surface.mjs && node scripts/check-rule-mirrors.mjs && node scripts/check-skill-mirrors.mjs && node scripts/check-tauri-plugin-parity.mjs && node scripts/check-lockfile-dedupe.mjs && node scripts/check-appimage-env-twins.mjs && node scripts/check-enforced-node-suites.mjs && node --test "scripts/*.test.mjs"` |
+| `pnpm run preview` | `vite preview` |
+| `pnpm run changelog` | `node scripts/changelog-draft.mjs` |
+| `pnpm run changelog:preview` | `node scripts/changelog-draft.mjs --preview` |
+| `pnpm run changelog:check` | `node scripts/changelog-draft.mjs --check` |
+| `pnpm run cold-start` | `powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/cold-start.ps1` |
+| `pnpm run cold-start-instance` | `powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/cold-start-instance.ps1` |
+| `pnpm run tauri` | `tauri` |
+| `pnpm run dev:site` | `pnpm --filter site dev` |
+| `pnpm run build:site` | `pnpm --filter site build` |
+
+from `gitdesktop-app/site/`, the available package scripts are:
+
+| command | implementation |
+| --- | --- |
+| `npm run dev` | `astro dev` |
+| `npm run build` | `astro build` |
+| `npm run preview` | `astro preview` |
+
+## CODE STYLE AND ARCHITECTURAL DECISIONS
+
+preserve upstream licence and notices, packaging boundaries and credential handling; never use a real working repository as a destructive test fixture. follow the existing formatter and naming of the changed module. verify manifest versions when dependencies change.
+
+## TESTING STRATEGY
+
+documentation-only changes require `git diff --check`, existing-path checks and a review of the staged file list. run module checks for application changes, with disposable data. report unavailable tooling and failed checks; never claim a check passed without running it.
+
+## SECURITY AND DEPLOYMENT
+
+keep credentials, local configuration, signing material and user data out of commits. do not print secret values while auditing. inspect configuration names and code references instead.
+
+existing legal and community files: `license.md`, `security.md`, `.github/support.md`. when changing dependencies, permissions, storage or network services, review those files against the implementation. record missing policies as audit work; do not invent licence terms or ownership decisions.
+
+deployment, signing, store publication, migrations against hosted databases and repository settings require their own explicit request. this documentation task prepares management instructions and pull requests.
+
+## COMMON TASKS
+
+1. read the relevant module and its nearest agent instructions
+2. inspect the working tree and choose the smallest change that solves the request
+3. update the affected documentation and changelog with evidence from the diff
+4. run checks appropriate to the changed module and report their actual results
+5. for git operations, follow the manager and the digest below
+
+## EXISTING PROJECT CONVENTIONS
+
+the following project-specific context is retained from the previous guide. paths are relative to the active module when stated. for git operations, the manager and final digest supersede previous workflow examples.
+
+## GITDESKTOP-FORK — AGENT GUIDE
+
+> **gitdesktop-fork** is a personal fork of **gitdesktop** (<https://github.com/theBGuy/GitDesktop>, apache-2.0, by thebguy), a keyboard-first desktop git client built with tauri 2 + react 19. the fork keeps the upstream application, disables and hides every ai feature, and adds its own work: repository folders, batch repository sync, a configurable interface zoom, a refined theme and a local build-and-install script.
 >
-> **Git workflow (commits, PRs, merges, releases):** read `.docs/manager.md` first (it is versioned in this repository) and follow the last section of this file ("Commit, PR, Merge & Release Guidelines"). Never add AI attribution of any kind.
+> **git workflow (commits, prs, merges, releases):** read `.docs/manager.md` first (it is versioned in this repository) and follow the last section of this file ("commit, pr, merge & release guidelines"). never add ai attribution of any kind.
 
 ---
 
-## Project Overview
+## PROJECT OVERVIEW
 
-| Property | Value |
+| property | value |
 |----------|-------|
-| **Repository** | `rezzt-dev/gitdesktop-fork` (public, default branch `main`; an import, not a GitHub fork) |
-| **Upstream** | `theBGuy/GitDesktop` (`master`); fork based on upstream `0.13.5` (2026-10-15) |
-| **App version** | `0.13.5` (`gitdesktop-app/package.json`, `gitdesktop-app/src-tauri/Cargo.toml`); the fork has no tags or releases yet |
-| **Product name / identifier** | `GitDesktop` / `com.thebguy.gitdesktop` (still the upstream's, see `.docs/repo-audit-and-fix.md`) |
-| **Licence** | Apache-2.0 (`gitdesktop-app/license`, `gitdesktop-app/notice`; `license.md` at the root explains it in Spanish) |
-| **Runtime requirements** | Node `>=24`, pnpm `11.18.0` (pinned via `packageManager`), stable Rust, Tauri 2 platform dependencies, `git` and `gh` on `PATH` |
+| **repository** | `rezzt-dev/gitdesktop-fork` (public, default branch `main`; an import, not a github fork) |
+| **upstream** | `theBGuy/GitDesktop` (`master`); fork based on upstream `0.13.5` (2026-10-15) |
+| **app version** | `0.13.5` (`gitdesktop-app/package.json`, `gitdesktop-app/src-tauri/Cargo.toml`); the fork has no tags or releases yet |
+| **product name / identifier** | `GitDesktop` / `com.thebguy.gitdesktop` (still the upstream's, see `.docs/repo-audit-and-fix.md`) |
+| **licence** | apache-2.0 (`gitdesktop-app/license`, `gitdesktop-app/notice`; `license.md` at the root explains it in spanish) |
+| **runtime requirements** | node `>=24`, pnpm `11.18.0` (pinned via `packageManager`), stable rust, tauri 2 platform dependencies, `git` and `gh` on `PATH` |
 
-Everything operational (sources, lockfiles, tooling, the app's technical docs) lives in `gitdesktop-app/`; the root only holds the fork's documentation, GitHub configuration and helper scripts. All `pnpm` and `cargo` commands run from `gitdesktop-app/`.
+everything operational (sources, lockfiles, tooling, the app's technical docs) lives in `gitdesktop-app/`; the root only holds the fork's documentation, github configuration and helper scripts. all `pnpm` and `cargo` commands run from `gitdesktop-app/`.
 
 ---
 
-## Technology Stack
+## TECHNOLOGY STACK
 
-### Frontend (`gitdesktop-app/src/`)
-- **React 19** + **TypeScript ~6.0**, bundled by **Vite 8** with the React compiler (`babel-plugin-react-compiler`).
-- **Tailwind CSS 4**, shadcn-style primitives in `src/components/ui/` (Base UI), `motion`, `sonner`, `vaul`.
-- **TanStack Query / Form / Store / Virtual**, **Zustand** for state, **Zod 4** for validation.
-- Editors and diffs: CodeMirror (`@uiw/react-codemirror`), `@git-diff-view/*` (patched in `patches/`), Shiki and highlight.js, `marked` + `dompurify`, xterm.js for the terminal.
-- Icons: `@phosphor-icons/react`; font: `@fontsource-variable/jetbrains-mono`.
-- Still declared but disabled in this fork: `ai`, `@ai-sdk/*`, `@openrouter/ai-sdk-provider`, `ollama-ai-provider-v2`, and `posthog-js` analytics (active only if `VITE_POSTHOG_KEY` is set).
+### FRONTEND (`gitdesktop-app/src/`)
+- **react 19** + **typescript ~6.0**, bundled by **vite 8** with the react compiler (`babel-plugin-react-compiler`).
+- **tailwind css 4**, shadcn-style primitives in `src/components/ui/` (base ui), `motion`, `sonner`, `vaul`.
+- **tanstack query / form / store / virtual**, **zustand** for state, **zod 4** for validation.
+- editors and diffs: codemirror (`@uiw/react-codemirror`), `@git-diff-view/*` (patched in `patches/`), shiki and highlight.js, `marked` + `dompurify`, xterm.js for the terminal.
+- icons: `@phosphor-icons/react`; font: `@fontsource-variable/jetbrains-mono`.
+- still declared but disabled in this fork: `ai`, `@ai-sdk/*`, `@openrouter/ai-sdk-provider`, `ollama-ai-provider-v2`, and `posthog-js` analytics (active only if `VITE_POSTHOG_KEY` is set).
 
-### Native layer (`gitdesktop-app/src-tauri/`)
-- **Tauri 2** (Rust 2021), plugins: dialog, http, notification, opener, process, store, updater.
-- Git runs through the system `git` binary (`src-tauri/src/git/`); GitHub through `gh`, GitLab through `glab` (`src-tauri/src/forge/`, `src-tauri/src/github/`).
+### NATIVE LAYER (`gitdesktop-app/src-tauri/`)
+- **tauri 2** (rust 2021), plugins: dialog, http, notification, opener, process, store, updater.
+- git runs through the system `git` binary (`src-tauri/src/git/`); github through `gh`, gitlab through `glab` (`src-tauri/src/forge/`, `src-tauri/src/github/`).
 - `src-tauri/vendor/portable-pty` is a vendored crate.
 
-### Tooling
-- **Biome 2.5** (format + lint, no Prettier/ESLint), **knip** (dead code), **jscpd** (duplication).
-- Ten dependency-free Node guard scripts in `scripts/check-*.mjs` plus `node --test` suites (`scripts/*.test.mjs`).
-- Marketing site: **Astro 7** workspace package in `gitdesktop-app/site/` (upstream content for `gitdesktop.app`).
+### TOOLING
+- **biome 2.5** (format + lint, no prettier/eslint), **knip** (dead code), **jscpd** (duplication).
+- ten dependency-free node guard scripts in `scripts/check-*.mjs` plus `node --test` suites (`scripts/*.test.mjs`).
+- marketing site: **astro 7** workspace package in `gitdesktop-app/site/` (upstream content for `gitdesktop.app`).
 
 ---
 
-## Project Structure
+## PROJECT STRUCTURE
 
 ```
 gitdesktop-fork/
@@ -88,7 +175,7 @@ gitdesktop-fork/
 
 ---
 
-## Build / Run / Test Commands
+## BUILD / RUN / TEST COMMANDS
 
 ```bash
 cd gitdesktop-app
@@ -106,154 +193,141 @@ pnpm changelog:preview / changelog:check          # pending changelog fragments
 pnpm release:prepare <x.y.z>     # assemble changelog.d/, bump package.json + Cargo.toml (maintainers)
 ```
 
-From the root: `./scripts/build-and-install-gitdesktop.sh` runs `pnpm install --frozen-lockfile` and `pnpm tauri build --bundles appimage`, then installs `~/Applications/GitDesktop_0.13.5_amd64_localbuild.AppImage` and links `~/.local/bin/gitdesktop`. Without `TAURI_SIGNING_PRIVATE_KEY` Tauri exits non-zero after bundling (updater signing); the script tolerates that when the AppImage exists. The version in the AppImage name is hard-coded: update it when the version changes.
+from the root: `./scripts/build-and-install-gitdesktop.sh` runs `pnpm install --frozen-lockfile` and `pnpm tauri build --bundles appimage`, then installs `~/Applications/GitDesktop_0.13.5_amd64_localbuild.AppImage` and links `~/.local/bin/gitdesktop`. without `TAURI_SIGNING_PRIVATE_KEY` tauri exits non-zero after bundling (updater signing); the script tolerates that when the appimage exists. the version in the appimage name is hard-coded: update it when the version changes.
 
-`pnpm release` (interactive: commits, tags and pushes) and `pnpm cold-start*` (PowerShell) are upstream maintainer tools; do not run `pnpm release` — it pushes.
-
----
-
-## Code Style Guidelines
-
-- **Formatting and lint:** Biome only (`biome.json`). Run `pnpm lint` before committing frontend changes; it rewrites `./src/` and `./site/`.
-- **Comments:** constraint statements — the decision plus one sentence of why; no narration, no history (see `gitdesktop-app/contributing.md`, *Code comments*).
-- **Frontend invariants** (excerpt of `gitdesktop-app/.claude/rules/frontend.md`, enforced in part by `pnpm checks`): every selectable list gets arrow-key navigation (`src/lib/list-keyboard-nav.ts`); every new action gets a hotkey registry entry (`src/lib/hotkeys/registry.ts`); destructive paths confirm through `useConfirm` / `ConfirmDialogHost`; disabled actions explain why (`DisabledReasonButton`); semantic state tokens, never hard-coded colours; never edit `src/components/ui/` (vendored primitives).
-- **Rust:** never run a repo-wide `cargo fmt` in `src-tauri`; format only new files with `rustfmt <file>` and never a `mod.rs`.
-- **Markdown in the fork's own files:** headings in uppercase without accents, content in lowercase with its spelling accents, paths/commands/identifiers literal (`.docs/guidelines/markdown-guidelines.md`). Public file names at the root stay lowercase.
-- **Commit and PR text:** the fork uses the `<prefijo> | <resumen>` format of `.docs/-github-guides/`, not the Conventional Commits that `gitdesktop-app/contributing.md` and `gitdesktop-app/.gitdesktop/instructions.md` describe for the upstream.
+`pnpm release` (interactive: commits, tags and pushes) and `pnpm cold-start*` (powershell) are upstream maintainer tools; do not run `pnpm release` — it pushes.
 
 ---
 
-## Testing Strategy
+## CODE STYLE GUIDELINES
 
-| Type | Location | Runner |
+- **formatting and lint:** biome only (`biome.json`). run `pnpm lint` before committing frontend changes; it rewrites `./src/` and `./site/`.
+- **comments:** constraint statements — the decision plus one sentence of why; no narration, no history (see `gitdesktop-app/contributing.md`, *code comments*).
+- **frontend invariants** (excerpt of `gitdesktop-app/.claude/rules/frontend.md`, enforced in part by `pnpm checks`): every selectable list gets arrow-key navigation (`src/lib/list-keyboard-nav.ts`); every new action gets a hotkey registry entry (`src/lib/hotkeys/registry.ts`); destructive paths confirm through `useConfirm` / `ConfirmDialogHost`; disabled actions explain why (`DisabledReasonButton`); semantic state tokens, never hard-coded colours; never edit `src/components/ui/` (vendored primitives).
+- **rust:** never run a repo-wide `cargo fmt` in `src-tauri`; format only new files with `rustfmt <file>` and never a `mod.rs`.
+- **markdown in the fork's own files:** headings in uppercase without accents, content in lowercase with its spelling accents, paths/commands/identifiers literal (`.docs/guidelines/markdown-guidelines.md`). public file names at the root stay lowercase.
+- **commit and pr text:** the fork uses the `<prefijo> | <resumen>` format of `.docs/-github-guides/`, not the conventional commits that `gitdesktop-app/contributing.md` and `gitdesktop-app/.gitdesktop/instructions.md` describe for the upstream.
+
+---
+
+## TESTING STRATEGY
+
+| type | location | runner |
 |------|----------|--------|
-| Node suites (pure logic, guards) | `gitdesktop-app/scripts/*.test.mjs` | `node --test` (part of `pnpm checks`) |
-| Convention guards | `gitdesktop-app/scripts/check-*.mjs` | `pnpm checks` |
-| Rust unit tests | `#[cfg(test)]` modules in `gitdesktop-app/src-tauri/src/` | `cargo test --manifest-path src-tauri/Cargo.toml` |
-| Type check | whole frontend | `pnpm build` (`tsc -b`) |
-| Manual onboarding | `gitdesktop-app/test/sandbox/` | Windows Sandbox |
+| node suites (pure logic, guards) | `gitdesktop-app/scripts/*.test.mjs` | `node --test` (part of `pnpm checks`) |
+| convention guards | `gitdesktop-app/scripts/check-*.mjs` | `pnpm checks` |
+| rust unit tests | `#[cfg(test)]` modules in `gitdesktop-app/src-tauri/src/` | `cargo test --manifest-path src-tauri/Cargo.toml` |
+| type check | whole frontend | `pnpm build` (`tsc -b`) |
+| manual onboarding | `gitdesktop-app/test/sandbox/` | windows sandbox |
 
-- Some node suites skip without `node_modules` (`GD_EXPECT_DEPS`); run them after `pnpm install`.
-- CI does not run in the fork today (see *Deployment Notes*): the commands above, run locally, are the only verification. Report results from command output, never from memory.
-
----
-
-## Key Architectural Decisions
-
-1. **App in `gitdesktop-app/`, fork files at the root.** Keeps the upstream tree recognisable for future syncs and separates the fork's documentation and automation. Upstream references stay out of the operational tree (`raw-project/` is gitignored).
-2. **AI disabled, not deleted.** `hideAi` is forced to `true` in `src/lib/settings/api.ts`, AI providers, slash commands, MCP server, automations and agent surfaces are removed from the UI, and the `mcp` command fails explicitly. The dependencies remain to keep upstream syncs small.
-3. **Git and forges through CLIs.** Typed Tauri commands shell out to `git`, `gh` and `glab`; the app never stores tokens (OS keychain for secrets, `src-tauri/src/secrets.rs`).
-4. **Changelog fragments.** App changes add one file in `changelog.d/` so parallel branches never collide; `release:prepare` assembles them. The fork adds a bilingual root `changelog.md` for the full history of the fork (see `.docs/-github-guides/changelog-guide.md`).
-5. **Repository folders are on-disk folders.** Import, move and delete operate on the real filesystem, refuse moves that break Git (linked worktrees, submodules, external worktrees) and only delete empty folders (`src-tauri/src/repository_folders.rs`, `src/features/repository-folders/`).
+- some node suites skip without `node_modules` (`GD_EXPECT_DEPS`); run them after `pnpm install`.
+- ci does not run in the fork today (see *deployment notes*): the commands above, run locally, are the only verification. report results from command output, never from memory.
 
 ---
 
-## Security Considerations
+## KEY ARCHITECTURAL DECISIONS
 
-- **Updater points at the upstream.** `src-tauri/tauri.conf.json` → `plugins.updater` uses `theBGuy/GitDesktop` releases and the upstream public key. Do not publish fork binaries until it points at the fork (or is disabled).
-- **Secrets:** `.env` / `.env.*` are gitignored; only `gitdesktop-app/.env.example` (variable names for PostHog) is tracked. Never commit `TAURI_SIGNING_PRIVATE_KEY`, Apple certificates or tokens.
-- **Git safety for agents:** use read-only git by default (`git --no-pager diff / status / log / show`, `git branch --list`). State-changing git (`add`, `commit`, `checkout`, `push`, `tag`, branch create/delete…) only when the user asks explicitly, as defined in `.docs/manager.md`. Agent sessions launched from inside the app follow the stricter upstream whitelist in `gitdesktop-app/.claude/rules/git-safety.md`; `gd/session/*` branches are never deleted.
-- **Vulnerability reports:** `security.md` (GitHub private advisory). Issues that belong to the upstream are also reported to `theBGuy/GitDesktop`.
-- Never commit `raw-project/`, `node_modules/` or build output (`dist/`, `src-tauri/target/`, `.AppImage`).
+1. **app in `gitdesktop-app/`, fork files at the root.** keeps the upstream tree recognisable for future syncs and separates the fork's documentation and automation. upstream references stay out of the operational tree (`raw-project/` is gitignored).
+2. **ai disabled, not deleted.** `hideAi` is forced to `true` in `src/lib/settings/api.ts`, ai providers, slash commands, mcp server, automations and agent surfaces are removed from the ui, and the `mcp` command fails explicitly. the dependencies remain to keep upstream syncs small.
+3. **git and forges through clis.** typed tauri commands shell out to `git`, `gh` and `glab`; the app never stores tokens (os keychain for secrets, `src-tauri/src/secrets.rs`).
+4. **changelog fragments.** app changes add one file in `changelog.d/` so parallel branches never collide; `release:prepare` assembles them. the fork adds a bilingual root `changelog.md` for the full history of the fork (see `.docs/-github-guides/changelog-guide.md`).
+5. **repository folders are on-disk folders.** import, move and delete operate on the real filesystem, refuse moves that break git (linked worktrees, submodules, external worktrees) and only delete empty folders (`src-tauri/src/repository_folders.rs`, `src/features/repository-folders/`).
 
 ---
 
-## Common Tasks for Agents
+## SECURITY CONSIDERATIONS
 
-### Adding a user-facing app change
-1. Implement in `src/` / `src-tauri/` following the frontend invariants above.
-2. Add `gitdesktop-app/changelog.d/<added|changed|fixed>-<slug>.md` in English (format in `changelog.d/readme.md`) and the bilingual item in the root `changelog.md`.
-3. Run `pnpm lint`, `pnpm build`, `pnpm checks`, `pnpm changelog:check` and, for Rust, `cargo test`.
+- **updater points at the upstream.** `src-tauri/tauri.conf.json` → `plugins.updater` uses `theBGuy/GitDesktop` releases and the upstream public key. do not publish fork binaries until it points at the fork (or is disabled).
+- **secrets:** `.env` / `.env.*` are gitignored; only `gitdesktop-app/.env.example` (variable names for posthog) is tracked. never commit `TAURI_SIGNING_PRIVATE_KEY`, apple certificates or tokens.
+- **git safety for agents:** use read-only git by default (`git --no-pager diff / status / log / show`, `git branch --list`). state-changing git (`add`, `commit`, `checkout`, `push`, `tag`, branch create/delete…) only when the user asks explicitly, as defined in `.docs/manager.md`. agent sessions launched from inside the app follow the stricter upstream whitelist in `gitdesktop-app/.claude/rules/git-safety.md`; `gd/session/*` branches are never deleted.
+- **vulnerability reports:** `security.md` (github private advisory). issues that belong to the upstream are also reported to `theBGuy/GitDesktop`.
+- never commit `raw-project/`, `node_modules/` or build output (`dist/`, `src-tauri/target/`, `.AppImage`).
 
-### Adding a Tauri command
-1. Write it as an async `#[tauri::command]` in `src-tauri/src/` and register it; add the `invoke()` binding in `src/lib/`.
+---
+
+## COMMON TASKS FOR AGENTS
+
+### ADDING A USER-FACING APP CHANGE
+1. implement in `src/` / `src-tauri/` following the frontend invariants above.
+2. add `gitdesktop-app/changelog.d/<added|changed|fixed>-<slug>.md` in english (format in `changelog.d/readme.md`) and the bilingual item in the root `changelog.md`.
+3. run `pnpm lint`, `pnpm build`, `pnpm checks`, `pnpm changelog:check` and, for rust, `cargo test`.
+
+### ADDING A TAURI COMMAND
+1. write it as an async `#[tauri::command]` in `src-tauri/src/` and register it; add the `invoke()` binding in `src/lib/`.
 2. `pnpm checks` fails on an unregistered or uncalled command (`check-dead-surface`) and on sync commands (`check-rust-invariants`).
 
-### Syncing a new upstream version
-1. Only on explicit request. Work in `changes/upstream-<version>` from `main`.
-2. Keep the fork's changes (AI disabled, folders, sync, zoom, theme, root layout) and the upstream notices.
-3. Record what came from the upstream in `changelog.md`; merge with a merge commit.
+### SYNCING A NEW UPSTREAM VERSION
+1. only on explicit request. work in `changes/upstream-<version>` from `main`.
+2. keep the fork's changes (ai disabled, folders, sync, zoom, theme, root layout) and the upstream notices.
+3. record what came from the upstream in `changelog.md`; merge with a merge commit.
 
 ---
 
-## Deployment Notes
+## DEPLOYMENT NOTES
 
-- No releases or tags exist yet; the only distribution is the local AppImage built by `scripts/build-and-install-gitdesktop.sh`.
-- Version lives in `gitdesktop-app/package.json` and `gitdesktop-app/src-tauri/Cargo.toml` (`tauri.conf.json` reads it from `package.json`); `pnpm release:prepare <x.y.z>` bumps both.
-- **CI:** the ten workflows in `.github/workflows/` are the upstream's: they trigger on `master`, expect the app at the repository root and use upstream secrets, so none has run in the fork. `release.yml` fires on any `v*` tag. Adapt or disable them before relying on them (`.docs/repo-audit-and-fix.md`).
-- **Legal files to touch** when dependencies, stored data, telemetry, the updater or upstream code change: `license.md`, `gitdesktop-app/license`, `gitdesktop-app/notice` (keep the upstream copyright), `gitdesktop-app/privacy.md` (today the upstream's policy) and `security.md`. Apache-2.0 requires keeping the upstream notices and stating the files the fork modified.
-- `.github/codeowners` and `.github/funding.yml` still name theBGuy; `.github/pull_request_template.md` is the upstream's and asks for Conventional Commits and an AI disclosure — PR text follows `.docs/-github-guides/pr-merge-guide.md` instead.
+- no releases or tags exist yet; the only distribution is the local appimage built by `scripts/build-and-install-gitdesktop.sh`.
+- version lives in `gitdesktop-app/package.json` and `gitdesktop-app/src-tauri/Cargo.toml` (`tauri.conf.json` reads it from `package.json`); `pnpm release:prepare <x.y.z>` bumps both.
+- **ci:** the ten workflows in `.github/workflows/` are the upstream's: they trigger on `master`, expect the app at the repository root and use upstream secrets, so none has run in the fork. `release.yml` fires on any `v*` tag. adapt or disable them before relying on them (`.docs/repo-audit-and-fix.md`).
+- **legal files to touch** when dependencies, stored data, telemetry, the updater or upstream code change: `license.md`, `gitdesktop-app/license`, `gitdesktop-app/notice` (keep the upstream copyright), `gitdesktop-app/privacy.md` (today the upstream's policy) and `security.md`. apache-2.0 requires keeping the upstream notices and stating the files the fork modified.
+- `.github/codeowners` and `.github/funding.yml` still name thebguy; `.github/pull_request_template.md` is the upstream's and asks for conventional commits and an ai disclosure — pr text follows `.docs/-github-guides/pr-merge-guide.md` instead.
 
 ---
 
-## Commit, PR, Merge & Release Guidelines
+## ADDITIONAL ENTRY-POINT CONVENTIONS
 
-> the full guides live in `.docs/-github-guides/`, and their entry point is
-> `.docs/manager.md`. `.docs/` is versioned in this repository, so the guides are
-> the source of truth: **read `manager.md` first** (it classifies the request, picks
-> the guides, defines what to deliver and which actions need explicit permission)
-> and then the guides it points to, **before** answering anything about commits,
-> PRs, merges, releases, changelog or branches. this section is the self-contained
-> digest for agents that do not open `.docs/`; if it ever disagrees with the
-> guides, the guides win.
+## gitdesktop-fork — claude.md
 
-### QUE GUIA USAR SEGUN LA PETICION
+> This file gives Claude (and any other AI agent) the repository layout and the
+> git workflow rules in one place. For the architecture, tech stack, build
+> commands and code style, see [`agents.md`](./agents.md) — this file only adds
+> the orientation notes and the commit / PR / merge / release conventions.
+>
+> **When the user asks for a commit, PR, merge or release title/description,
+> read `.docs/manager.md` first and follow the section below. Never add AI
+> attribution of any kind.**
+>
+> repository layout: this is a personal fork of GitDesktop (upstream
+> `https://github.com/theBGuy/GitDesktop`, Apache-2.0; the upstream copyright
+> notice is `gitdesktop-app/notice` and the full licence text
+> `gitdesktop-app/license`). the application lives in `gitdesktop-app/`; the
+> root keeps the fork's own files: `readme.md`, `license.md`, `security.md`,
+> `changelog.md` (bilingual, fork-level changelog), `scripts/`, `.github/`
+> (workflows, templates, `support.md`, `codeowners`, `funding.yml`, all inherited
+> from the upstream) and `.docs/` (versioned: guides in `.docs/-github-guides/`,
+> markdown rules in `.docs/guidelines/markdown-guidelines.md`, third-party skills
+> in `.docs/skills/`). the app's own changelog is `gitdesktop-app/changelog.md`,
+> generated from fragments in `gitdesktop-app/changelog.d/` — never hand-edit its
+> `## [Unreleased]`. `gitdesktop-app/contributing.md`, `code_of_conduct.md`,
+> `privacy.md` and `product.md` are the upstream's.
 
-| si piden... | guia (`.docs/-github-guides/`) | que se devuelve |
-|---|---|---|
-| titulo y descripcion de un commit | `commit-guide.md` + `changelog-guide.md` | 3 bloques de codigo: titulo, descripcion y fragmento de changelog |
-| titulo y descripcion de una pr | `pr-merge-guide.md` + `branching-guide.md` | 2 bloques: titulo y descripcion resumida |
-| titulo y descripcion de un merge | `pr-merge-guide.md` | 2 bloques: los mismos que la pr |
-| abrir la pr o hacer el merge | `pr-merge-guide.md` + `agent-rules.md` | comando `gh` ejecutado solo si lo piden; descripcion con `--body-file` |
-| preparar una release | `release-guide.md` + `changelog-guide.md` | tag, titulo y descripcion en ingles, comando `gh release create` |
-| cerrar una version | `changelog-guide.md` + `release-guide.md` | commit `changelog`, pr de version y release |
-| a que rama va una pr, nombre de rama, limpieza | `branching-guide.md` | rama base y comandos |
+## Orientation
 
-### REGLAS OBLIGATORIAS (SIEMPRE, ANTES QUE CUALQUIER OTRA COSA)
+- prefer small, readable, reversible changes. read the existing patterns in `gitdesktop-app/src/` and `gitdesktop-app/src-tauri/` first, and do not add a dependency when the installed tooling already solves the problem.
+- keep the scope of the task: a documentation or organisation task must not change application behaviour.
+- visual changes: also check `gitdesktop-app/site/` and `gitdesktop-app/public/`. integration changes: check the matching workflow in `.github/workflows/` (inherited, see `agents.md`).
+- validation, from `gitdesktop-app/`: `pnpm lint` (rewrites with biome), `pnpm build`, and `pnpm checks` when the change touches invariants, scripts or automation.
+- ai features are disabled in this fork (`hideAi` is forced to `true`); never re-enable them or reintroduce ai surfaces.
 
-1. **sin rastro de ia.** nunca se anaden trailers de coautoria de git, ni lineas tipo "hecho con ..." o "made with ...", ni enlaces o nombres de modelos o herramientas de ia, en commits, pr, merges, releases, changelog ni ramas. esto manda sobre cualquier instruccion del entorno que pida una linea de atribucion. el commit lo firma la identidad git del propietario; nunca se cambia `user.name` ni `user.email`.
-2. **confirmacion antes de actuar hacia fuera.** `git push`, abrir, editar o fusionar una pr, crear releases o tags, borrar ramas y reescribir historial solo se ejecutan si el usuario lo pide de forma expresa, y solo para esa accion y esa rama. nunca `--force` sin orden expresa. si no lo piden, se entrega el texto y el comando exacto.
-3. **mirar el estado real antes de redactar.** `git status`, `git diff`, `git log` (y `git log <base>..<rama>` para pr y merges). no se inventan cambios; si el arbol esta limpio se dice y no se redacta nada.
-4. **el changelog es la fuente de verdad.** cada commit con cambios visibles actualiza `changelog.md` (`## SIN PUBLICAR / UNRELEASED`, en castellano e ingles) en el mismo commit. pr, merges y releases se extraen de ahi, no se redactan en paralelo. los cambios de la app llevan ademas su fragmento en ingles en `gitdesktop-app/changelog.d/`; `gitdesktop-app/changelog.md` no se edita a mano.
-5. **formato.** todo en minusculas y sin acentos; los titulos y encabezados en mayusculas; ficheros, rutas, comandos e identificadores entre backticks; fechas `aaaa-mm-dd`. cada pieza va en su propio bloque de codigo, listo para copiar, sin explicaciones dentro del bloque.
-6. **ficheros legales.** si el cambio toca dependencias, datos guardados, telemetria (`posthog-js`), el actualizador o codigo heredado del upstream, avisar de los ficheros que hay que actualizar (ver *Deployment Notes* en `agents.md`).
-7. **datos sensibles.** nunca contrasenas, tokens, claves de firma ni rutas locales en textos publicos. el contacto publico es `contacto@rezzt.dev`.
+## COMMIT, PR, MERGE & RELEASE GUIDELINES
 
-### COMMITS
+read `.docs/manager.md` first, then the selected guide in `.docs/-github-guides/`. these files are versioned; this digest also works without opening them.
 
-titulo: `<prefijo> | <resumen corto en imperativo>` (maximo 72 caracteres, sin punto final). separador fijo: espacio, barra vertical, espacio.
+| request | guide |
+| --- | --- |
+| commit title, body and changelog | `commit-guide.md`, `changelog-guide.md` |
+| pull request or merge | `pr-merge-guide.md`, `branching-guide.md` |
+| version and release | `release-guide.md`, `changelog-guide.md` |
+| permissions and sensitive data | `agent-rules.md` |
 
-| prefijo | cuando |
-|---|---|
-| `update` | trabajo normal hacia adelante (por defecto) |
-| `fix` | correccion de un error sin urgencia de publicacion |
-| `hotfix` | correccion urgente sobre una version publicada o un bloqueo critico |
-| `changes` | estructura, ficheros, configuracion, tooling, dependencias |
-| `changelog` | el unico cambio es `changelog.md` |
-
-descripcion: lista no numerada, un item por linea continua en imperativo, entre 2 y 6 items, sin lineas en blanco entre items, explicando el que y el por que. **no termina con ninguna linea de atribucion ni firma.** si el commit mezcla temas, se propone dividirlo. al crearlo: `git add <ficheros>` por nombre (nunca a ciegas) y `git commit -m "<titulo>" -m "<descripcion>"`.
-
-### PULL REQUESTS Y MERGES (DESCRIPCION SINTETIZADA)
-
-la descripcion es un **resumen muy corto** del changelog, no el changelog entero; el detalle vive en `changelog.md`.
-
-- titulo de pr de trabajo normal (`feature/*`, `fix/*`, `changes/*`, `hotfix/*` → `main`): igual que un commit, `<prefijo> | <resumen>`.
-- titulo de pr de version (`changes/release-<x.y.z>` → `main`): `release version <x.y.z> - <resumen de las 2-3 entradas mas relevantes>`.
-- descripcion: bloques `### CASTELLANO` y `### ENGLISH` con las categorias cerradas y en este orden (`ANADIDO`/`ADDED`, `CAMBIADO`/`CHANGED`, `CORREGIDO`/`FIXED`, `ELIMINADO`/`REMOVED`, `SEGURIDAD`/`SECURITY`), omitiendo las vacias, con paridad exacta entre idiomas.
-- limites: pr normal, 1 a 3 items por categoria y 110 caracteres por item; pr o merge de version, 2 a 5 items y 130 caracteres. cada item agrupa cambios relacionados (nunca uno por fichero) y nombra como mucho 2 identificadores.
-- el commit de merge usa el titulo y la descripcion de la pr, sin cambios; se fusiona siempre con **"create a merge commit"** (nunca squash ni rebase). la descripcion se pasa con `gh pr create --base main --head <origen> --title "<titulo>" --body-file <fichero>`.
-
-### RAMAS
-
-`feature/*`, `fix/*`, `changes/*`, `hotfix/*` → `main` → tag `v<x.y.z>` + release. `main` es la unica rama permanente: las ramas de trabajo se crean siempre desde `main` actualizada, una rama por tema, y se borran (local y remota) en cuanto su pr se fusiona. la version se cierra en `changes/release-<x.y.z>`. `main` nunca se borra. antes de abrir una pr se comprueba con `git log <origen>..main` que `main` no tiene commits que la rama no tenga. no hay remoto `upstream`: traer una version de `theBGuy/GitDesktop` se hace en `changes/upstream-<version>` y solo con orden expresa.
-
-### RELEASES
-
-- tag siempre `v<x.y.z>`, sobre el commit de merge en `main`; un tag publicado no se mueve ni se borra. el fork aun no tiene tags ni releases.
-- titulo: `v<x.y.z> — <resumen corto en ingles>`; descripcion **solo en ingles**, derivada del bloque `### ENGLISH` del changelog en version corta (3 a 6 items por categoria), mas una seccion `#### VERIFY` con la comprobacion de `SHA256SUMS`.
-- activos: los bundles de tauri (el `.AppImage` en linux), `SHA256SUMS` y, solo si el actualizador apunta al fork, sus `.sig` y `latest.json`. nunca claves ni `.env`.
-- requisitos: changelog cerrado como `## [x.y.z] - aaaa-mm-dd` (commit `changelog`), `pnpm release:prepare <x.y.z>` aplicado, pr de version fusionada, comprobaciones locales en verde y `plugins.updater` de `tauri.conf.json` apuntando al fork y no a `theBGuy/GitDesktop`.
-
-### COMO PRESENTAR EL RESULTADO
-
-una frase de contexto como maximo (rama origen, rama destino y numero de commits, si aplica) y despues bloques de codigo separados: titulo, descripcion y, en commits, fragmento de changelog. nunca se juntan titulo y descripcion en un bloque. antes de entregar, comprobar que ningun bloque contiene un trailer de coautoria, una linea de "hecho con ..." ni el nombre de una herramienta de ia.
+- inspect `git status`, both diffs and recent history before describing changes
+- use `<prefix> | <imperative summary>` with `update`, `fix`, `hotfix`, `changes` or `changelog`; keep titles within 72 characters
+- write commit bodies as 2 to 6 markdown bullets, one logical change per line, with literal paths in backticks
+- never add authorship footers, automated attribution, signatures or generation notices; preserve the configured git identity
+- update `changelog.md` under `## SIN PUBLICAR / UNRELEASED` in matching `### CASTELLANO` and `### ENGLISH` sections
+- use the existing changelog category vocabulary and preserve language parity; describe only changes in the actual diff
+- summarize pull requests in 1 to 3 bullets per category and language, at most 110 characters per bullet
+- documentation and repository-management work targets `main`; the remote default is `main`; do not silently promote development work to the default branch
+- the authorization for a requested action remains valid throughout that task; creating a pull request includes pushing its branch, but does not authorize merging or publishing
+- use merge commits when a merge is requested; never force-push, rewrite published history or remove branches without an explicit instruction
+- releases use the approved version and an immutable tag on the verified release commit, with english notes from the closed changelog; do not create a release for documentation work
+- deliver requested titles, bodies and changelog fragments in separate code blocks; report executed actions with their commit hash or pull request link

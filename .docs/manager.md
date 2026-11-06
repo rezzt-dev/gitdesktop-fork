@@ -14,7 +14,7 @@
 ## 1. PROTOCOLO (SIEMPRE EN ESTE ORDEN)
 
 1. **leer `agent-rules.md`.** manda sobre todo lo demas: sin rastro de ia y confirmacion antes de actuar hacia fuera.
-2. **clasificar la peticion** con la tabla de la seccion 2. si encaja en varias, se resuelven en el orden de la seccion 4.
+2. **clasificar la peticion** con la tabla de la seccion 2. si encaja en varias, se resuelven en el orden de la seccion 8.
 3. **abrir solo las guias que indica la tabla**; no hace falta leer las demas.
 4. **mirar el estado real** con los comandos de lectura de la tabla. nunca se redacta de memoria ni a partir de lo que se hizo antes en la conversacion.
 5. **redactar** siguiendo literalmente el formato de la guia.
@@ -32,14 +32,14 @@ las frases son ejemplos; vale cualquier peticion equivalente en castellano o ing
 |---|---|---|---|---|
 | texto de commit | "sacame el titulo y la descripcion del commit", "que pongo en el commit" | `commit-guide`, `changelog-guide` | `git status`, `git diff`, `git diff --cached`, `git log -5 --oneline` | titulo, descripcion, fragmento de changelog |
 | crear commit | "haz el commit", "commitea esto" | `commit-guide`, `changelog-guide` | los mismos | texto + commit ejecutado |
-| actualizar changelog | "actualiza el changelog", "anade esto al changelog" | `changelog-guide` | `git diff`, lectura de `changelog.md` (y, si el cambio es de la app, `gitdesktop-app/changelog.d/`) | fragmento aplicado en `## SIN PUBLICAR / UNRELEASED` |
+| actualizar changelog | "actualiza el changelog", "anade esto al changelog" | `changelog-guide` | `git diff`, lectura de `changelog.md` | fragmento aplicado en `## SIN PUBLICAR / UNRELEASED` |
 | texto de pr | "titulo y descripcion de la pr", "merge request de x a y" | `pr-merge-guide`, `branching-guide` | `git log <base>..<rama>`, `git diff <base>...<rama> --stat` | titulo y descripcion resumida |
 | abrir pr | "haz la pr", "abre la pr" | `pr-merge-guide`, `branching-guide`, `agent-rules` | los de arriba, `gh auth status`, `gh pr list` | texto + pr abierta + enlace |
 | texto de merge | "titulo y descripcion para el merge", "para fusionar" | `pr-merge-guide` | `gh pr view <n>` | titulo y descripcion de la pr, sin cambios |
 | fusionar | "fusiona la pr", "haz el merge" | `pr-merge-guide`, `agent-rules` | `gh pr view <n>`, `gh pr checks <n>` | `gh pr merge <n> --merge` ejecutado |
 | texto de release | "titulo y descripcion de la release" | `release-guide`, `changelog-guide` | lectura del changelog cerrado, `git tag` | titulo, descripcion en ingles, tag |
 | publicar release | "publica la release", "crea la release" | `release-guide`, `agent-rules` | `gh release list`, `gh pr view` de la pr de version | tag y release creados |
-| cerrar version | "cierra la version", "prepara la 0.14.0" | `changelog-guide`, `release-guide`, `branching-guide` | lectura del changelog, `gitdesktop-app/package.json`, `gitdesktop-app/src-tauri/Cargo.toml` | commit `changelog`, luego pr de version |
+| cerrar version | "cierra la version", "prepara la 1.5" | `changelog-guide`, `release-guide`, `branching-guide` | lectura del changelog, `gitdesktop-app/package.json` | commit `changelog`, luego pr de version |
 | ramas | "a que rama va esto", "nombre de la rama", "borra la rama" | `branching-guide` | `git branch -a`, `git log <origen>..<destino>` | rama base y comandos |
 | revisar estado | "esta todo listo para fusionar", "que falta" | `branching-guide`, `pr-merge-guide` | `gh pr view`, `git log`, `git status` | lista de lo que falta |
 
@@ -55,7 +55,6 @@ para no hacer preguntas innecesarias, estas decisiones ya estan tomadas:
 - **longitud:** descripciones de pr y merge siempre sintetizadas (limites de `pr-merge-guide.md`, seccion 2). si el usuario pide "resumida" o "muy sintetizada", se usa el limite inferior.
 - **tipo de merge:** siempre "create a merge commit".
 - **prefijo de commit:** `update` si no hay un motivo claro para otro.
-- **rama base:** `main`, la unica rama permanente (ver `branching-guide.md`).
 - **rama actual:** la peticion habla de la rama en la que esta el repositorio (`git branch --show-current`) salvo que nombre otra.
 - **entrega de texto:** si el usuario pide "titulo y descripcion", solo se entregan los bloques, sin ejecutar nada.
 
@@ -65,11 +64,10 @@ para no hacer preguntas innecesarias, estas decisiones ya estan tomadas:
 
 solo se pregunta cuando la respuesta cambia lo que se hace y no hay default:
 
-- la rama base de una pr cuando la rama de origen no encaja en `branching-guide.md` (por ejemplo, una rama sin prefijo de trabajo o una rama de integracion que no existe en la guia).
+- la rama base de una pr cuando la rama de origen no encaja en `branching-guide.md` (por ejemplo, una rama `changes/*` sin `main` activa).
 - el numero y el resumen de una version nueva que aun no esta en el changelog.
 - si hay dos cambios no relacionados en el arbol y no se puede decidir si van en un commit o en dos.
-- el numero de version propio del fork mientras no este decidido el esquema (ver `changelog-guide.md`, seccion 6).
-- traer una version nueva del upstream (`theBGuy/GitDesktop`): cual y en que rama, porque cambia mucho codigo.
+
 nunca se pregunta por formato, prefijos, idioma, tipo de merge ni por comprobaciones que pueden hacerse con un comando de lectura.
 
 ---
@@ -86,7 +84,8 @@ el verbo de la peticion decide si se ejecuta algo:
 | "fusiona" | `gh pr merge <n> --merge` | borrar la rama |
 | "borra la rama" | borrado local y remoto de **esa** rama | borrar otras |
 | "publica la release" | tag y `gh release create` | modificar el changelog |
-los permisos no se heredan: una orden anterior ("haz la pr") no autoriza la siguiente ("fusiona") ni vale para otra rama.
+
+la autorizacion se mantiene durante toda la tarea solicitada. abrir una pr incluye subir esa rama, pero no autoriza fusionarla ni publicar releases. no volver a pedir permiso para pasos ya solicitados.
 
 ---
 
@@ -98,27 +97,7 @@ los permisos no se heredan: una orden anterior ("haz la pr") no autoriza la sigu
 4. si se ejecuto una accion, el enlace o el hash resultante.
 5. sin atribucion, firmas ni pies de pagina.
 
-ejemplo de respuesta a "titulo y descripcion de la pr de feature/batch-sync a main":
-
-```
-feature/batch-sync → main, 3 commits, sin conflictos.
-```
-
-```
-update | anadir la sincronizacion masiva de repositorios
-```
-
-```
-### CASTELLANO
-
-#### ANADIDO
-- <item>
-
-### ENGLISH
-
-#### ADDED
-- <item>
-```
+ejemplo de entrega: indicar la rama origen y destino, presentar titulo y descripcion en bloques separados y devolver el enlace si se abrio la pr.
 
 ---
 
@@ -130,7 +109,7 @@ update | anadir la sincronizacion masiva de repositorios
 - [ ] las descripciones respetan los limites de longitud y la paridad entre idiomas.
 - [ ] el changelog esta actualizado y coincide con el texto.
 - [ ] todo esta en minusculas y sin acentos (titulos aparte) y con backticks en identificadores.
-- [ ] no aparece ningun trailer de coautoria, ninguna linea de "hecho con ..." ni el nombre de ninguna herramienta de ia.
+- [ ] no aparece `co-authored-by`, "generated with" ni el nombre de ninguna herramienta de ia.
 - [ ] solo se ha ejecutado lo que el usuario pidio de forma expresa.
 
 ---
@@ -144,13 +123,12 @@ cuando una peticion junta varias acciones, se ejecutan en este orden y cada una 
 3. push de la rama.
 4. abrir la pr.
 5. fusionar la pr.
-6. cambiar a `main` y traer los cambios (`git checkout main`, `git pull --ff-only`).
+6. cambiar a la rama destino y traer los cambios (`git checkout <destino>`, `git pull --ff-only`).
 7. borrar la rama de trabajo.
-8. tag y release (solo cuando el actualizador apunte al fork; ver `release-guide.md`).
+8. preparar la siguiente promocion solo si el flujo real del proyecto la requiere y el usuario la ha solicitado.
+9. tag y release.
 
-no hay una "siguiente pr del flujo": las ramas de trabajo van directas a `main` (ver `branching-guide.md`).
-
-si un paso falla (conflictos, `quality` en rojo o una comprobacion local fallida, pr no fusionable), se detiene la cadena, se explica el motivo y no se intenta saltarlo ni forzarlo.
+si un paso falla (conflictos, `appimage-check / changelog / frontend / homebrew / quality / release / rust-tests / site-rebuild / site-scheduled-publish / site` en rojo, pr no fusionable), se detiene la cadena, se explica el motivo y no se intenta saltarlo ni forzarlo.
 
 ---
 
@@ -164,5 +142,7 @@ si un paso falla (conflictos, `quality` en rojo o una comprobacion local fallida
 - dejar la rama de trabajo viva despues de fusionarla (si el usuario pidio borrarla).
 - ejecutar `git push --force`, mover tags o reescribir historial sin orden expresa.
 - anadir cualquier linea que delate la intervencion de una ia.
-- editar a mano `## [Unreleased]` de `gitdesktop-app/changelog.md`: lo genera `pnpm release:prepare` a partir de `gitdesktop-app/changelog.d/`.
-- seguir las convenciones del upstream (conventional commits de `gitdesktop-app/contributing.md` y `gitdesktop-app/.gitdesktop/instructions.md`) para commits y pr del fork: mandan estas guias.
+
+## ESTILO LOCAL
+
+para documentos markdown, prevalece `.docs/guidelines/markdown-guidelines.md`: conservar los acentos y las excepciones literales que indique. el formato de mensajes de git se aplica al preparar sus titulos y cuerpos.

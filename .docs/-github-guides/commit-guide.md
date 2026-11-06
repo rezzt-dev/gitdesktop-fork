@@ -29,16 +29,14 @@
 
 si un commit mezcla un fix y una mejora, se divide en dos. si no es posible, gana el prefijo del cambio principal.
 
-el historial del upstream usa conventional commits (`feat(scope): ...`); en este fork no se usan.
-
 ### ejemplos
 
 ```
-update | anadir la sincronizacion masiva de repositorios
-fix | aplicar y guardar el zoom de interfaz al instante
-hotfix | evitar el cierre al abrir un repositorio sin rama actual
-changes | mover la aplicacion a gitdesktop-app y dejar la documentacion en la raiz
-changelog | cerrar la seccion de changelog para la version 0.14.0
+update | completar la documentacion del proyecto
+fix | corregir una referencia rota en la documentacion
+hotfix | corregir un fallo critico de la version publicada
+changes | reorganizar la documentacion del proyecto
+changelog | cerrar la seccion de la version 1.4.0
 ```
 
 ---
@@ -50,14 +48,13 @@ changelog | cerrar la seccion de changelog para la version 0.14.0
 - explica el que y el por que, no el detalle linea a linea.
 - entre 2 y 6 items; si hacen falta mas, el commit es demasiado grande.
 - ficheros, rutas, comandos e identificadores siempre entre backticks.
-- no termina con ninguna linea de atribucion, firma ni trailer de coautoria (ver `agent-rules.md`).
+- no termina con ninguna linea de atribucion, firma ni `co-authored-by` (ver `agent-rules.md`).
 
 ejemplo:
 
-```
-- anadir `repository_folder_scan` para importar una jerarquia de carpetas sin copiar ni mover ficheros
-- rechazar en `repository_folder_move` los movimientos que romperian worktrees o submodulos
-- anadir el fragmento `gitdesktop-app/changelog.d/added-repository-folders.md` para las notas de la app
+```text
+- adaptar las guias de gestion a las rutas y ramas del proyecto
+- conservar las convenciones tecnicas y retirar instrucciones duplicadas
 ```
 
 ---
@@ -65,8 +62,6 @@ ejemplo:
 ## 3. CHANGELOG
 
 todo commit con cambios visibles para usuarios o desarrolladores actualiza `changelog.md` en el mismo commit, dentro de `## SIN PUBLICAR / UNRELEASED`, en castellano e ingles. las reglas estan en `changelog-guide.md`. solo se exceptuan los commits `changelog` (que ya son el cambio) y los que no tocan nada publicable (por ejemplo, ajustes de `.gitignore` locales).
-
-si el commit cambia la app (`gitdesktop-app/src/`, `gitdesktop-app/src-tauri/`), ademas anade su fragmento en ingles en `gitdesktop-app/changelog.d/` (`<added|changed|fixed>-<slug>.md`, ver `gitdesktop-app/changelog.d/readme.md`); los cambios de documentacion, guias o `site/` no llevan fragmento.
 
 ---
 
@@ -91,7 +86,7 @@ git add <ficheros>
 git commit -m "<titulo>" -m "<descripcion>"
 ```
 
-se anaden los ficheros por nombre, nunca `git add -A` a ciegas; se comprueba antes con `git status` que no entran ficheros ignorados, claves ni artefactos de compilacion (`node_modules/`, `gitdesktop-app/dist/`, `gitdesktop-app/src-tauri/target/`, `.AppImage`).
+se anaden los ficheros por nombre, nunca `git add -A` a ciegas; se comprueba antes con `git status` que no entran ficheros ignorados, claves ni artefactos de compilacion.
 
 ---
 
@@ -101,4 +96,8 @@ se anaden los ficheros por nombre, nunca `git add -A` a ciegas; se comprueba ant
 - [ ] el titulo cabe en 72 caracteres y esta en imperativo.
 - [ ] cada item ocupa una sola linea y empieza por `-`.
 - [ ] el changelog esta actualizado en los dos idiomas.
-- [ ] no hay atribucion de ia ni trailer de coautoria.
+- [ ] no hay atribucion de ia ni `co-authored-by`.
+
+## ESTILO LOCAL
+
+para documentos markdown, prevalece `.docs/guidelines/markdown-guidelines.md`: conservar los acentos y las excepciones literales que indique. el formato de mensajes de git se aplica al preparar sus titulos y cuerpos.

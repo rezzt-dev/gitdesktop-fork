@@ -1,76 +1,38 @@
 # GUIA DE RAMAS
 
-> ramas del repositorio, flujo de versiones y que rama es la base de cada pull
-> request. sirve para decidir el destino de una pr sin tener que preguntarlo.
-> el modelo sale del estado real del repositorio (`git branch -a` solo muestra `main` y `origin/main`; `git log --graph` es lineal, con 16 commits directos en `main`, sin merges ni tags), no de las
-> guias antiguas, que citaban ramas que aqui no existen.
+## 1. RAMAS VERIFICADAS
 
----
+ramas remotas consultadas el 2026-11-06: `main`.
 
-## 1. RAMAS PERMANENTES
-
-| rama | funcion |
-|---|---|
-| `main` | unica rama permanente y rama por defecto en github; recibe las ramas de trabajo con "create a merge commit"; de aqui salen los tags `v<x.y.z>` |
-
-no hay ramas de integracion (`beta-*`, `version-*`, `develop`, `testing-branch`, `release-branch`). si algun dia se crean, esta guia se actualiza antes de usarlas.
-
----
+la rama por defecto de github es `main`. el trabajo actual de documentacion parte de `main`; no se cambia la rama por defecto ni se fusionan lineas de version por copiar este modelo.
 
 ## 2. RAMAS DE TRABAJO
 
-nombre en minusculas, con barra y guiones:
+| prefijo | uso | destino |
+| --- | --- | --- |
+| `feature/` | funcionalidad nueva | rama de desarrollo acordada |
+| `fix/` | correcciones | rama que contiene el fallo |
+| `changes/` | documentacion, estructura y tooling | `main` para esta tarea |
+| `hotfix/` | urgencia sobre una version publicada | rama del codigo publicado verificada |
 
-| prefijo | uso | ejemplo |
-|---|---|---|
-| `feature/` | funcionalidad nueva | `feature/batch-sync` |
-| `fix/` | correccion de error | `fix/interface-zoom` |
-| `changes/` | estructura, tooling, documentacion y cierre de version (`changes/release-<x.y.z>`) | `changes/repo-management-guides` |
-| `hotfix/` | urgencia sobre una version publicada | `hotfix/startup-crash` |
+una rama por tema. este trabajo usa `changes/repo-management-complete`. comprobar siempre `git log <base>..<rama>` y `git diff <base>...<rama>` antes de abrir la pr.
 
-- se crean siempre desde `main` actualizada (`git checkout main`, `git pull --ff-only`, `git checkout -b <rama>`).
-- una rama, un tema; si el tema crece, se divide.
-- una rama de trabajo se borra (local y remota) en cuanto su pr esta fusionada.
-- hasta ahora el trabajo se ha hecho con commits directos en `main`, sin pr; a partir de estas guias cada cambio pasa por una rama de trabajo y una pr.
-- el upstream `theBGuy/GitDesktop` trabaja en `master` y no hay remoto `upstream` configurado. una actualizacion desde el upstream se hace en una rama `changes/upstream-<version>` hacia `main`, nunca directamente en `main`.
+## 3. FLUJO Y VERSIONES
 
----
+`changes/repo-management-complete` → `main` mediante pull request. usar merge commit si se solicita fusionar. una pr de documentacion no cierra una version ni publica artefactos.
 
-## 3. FLUJO DE UNA VERSION
+para otras versiones, verificar el historial y las ramas vigentes antes de decidir la base. no crear ramas de alfa, beta o release inexistentes. no copiar un modelo de promociones de otro proyecto.
 
-```
-feature/* , fix/* , changes/* , hotfix/*   →   main   →   tag v<x.y.z> + release
-```
+## 4. VERIFICACION
 
-| paso | origen | destino | tipo de pr | titulo |
-|---|---|---|---|---|
-| 1 | `feature/*`, `fix/*`, `changes/*`, `hotfix/*` | `main` | trabajo normal | `<prefijo> \| <resumen>` |
-| 2 | `changes/release-<x.y.z>` | `main` | version | `release version <x.y.z> - <resumen>` |
-| 3 | `main` | — | release de github | `v<x.y.z> — <resumen en ingles>` |
+workflows versionados: `.github/workflows/appimage-check.yml`, `.github/workflows/changelog.yml`, `.github/workflows/frontend.yml`, `.github/workflows/homebrew.yml`, `.github/workflows/quality.yml`, `.github/workflows/release.yml`, `.github/workflows/rust-tests.yml`, `.github/workflows/site-rebuild.yml`, `.github/workflows/site-scheduled-publish.yml`, `.github/workflows/site.yml`. comprobar los checks reales de la pr; la ausencia de ci no equivale a una ejecucion correcta. para documentacion, revisar enlaces y `git diff --check`; para codigo, seguir los comandos de la guia del proyecto.
 
-- los `hotfix/` salen de `main`, vuelven a `main` y se publican como una version `z` nueva.
-- todos los pasos se fusionan con "create a merge commit".
-- antes de abrir una pr se comprueba que el destino no tiene commits que la rama no tenga: `git log <origen>..main`. si los tiene, se actualiza la rama primero (`git merge main`; nunca `rebase` sobre una rama ya subida sin orden expresa).
----
-
-## 4. CI
-
-- los workflows de `.github/workflows/` son los del upstream: `quality`, `frontend`, `rust-tests`, `changelog`, `site`, `appimage-check`, `release`, `homebrew`, `site-rebuild` y `site-scheduled-publish`.
-- hoy no validan nada util en el fork: los `push` escuchan `master` (aqui es `main`), sus rutas y comandos esperan la app en la raiz (`src/`, `src-tauri/`, `package.json`) y no en `gitdesktop-app/`, y github no tiene ninguna ejecucion registrada.
-- hasta que se adapten (ver `repo-audit-and-fix.md`), antes de fusionar se ejecutan en local, desde `gitdesktop-app/`: `pnpm lint` (reescribe con `biome --write`), `pnpm build`, `pnpm checks`, `pnpm changelog:check` y, si se toco rust, `cargo test --manifest-path src-tauri/Cargo.toml`.
-- cuando esten adaptados, no se fusiona una pr con `quality`, `frontend`, `rust-tests` o `changelog` en rojo.
-
----
+antes de publicar, comprobar que el destino no introduce cambios incompatibles. actualizar la rama mediante un merge autorizado cuando haga falta; no reescribir commits publicados.
 
 ## 5. LIMPIEZA
 
-tras fusionar una pr de trabajo:
+conservar las ramas permanentes. borrar una rama de trabajo solo tras confirmar su merge y cuando se haya solicitado su eliminacion. no cambiar la copia de trabajo del propietario para limpiar un worktree auxiliar.
 
-```
-git checkout main
-git pull --ff-only
-git branch -d <rama>
-git push origin --delete <rama>
-```
+## ESTILO LOCAL
 
-`main` nunca se borra.
+para documentos markdown, prevalece `.docs/guidelines/markdown-guidelines.md`: conservar los acentos y las excepciones literales que indique. el formato de mensajes de git se aplica al preparar sus titulos y cuerpos.
