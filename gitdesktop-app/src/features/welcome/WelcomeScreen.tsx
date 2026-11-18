@@ -3,6 +3,7 @@ import {
   CompassIcon,
   FolderOpenIcon,
   FolderPlusIcon,
+  FoldersIcon,
   GearIcon,
   GitForkIcon,
   QuestionIcon,
@@ -41,6 +42,14 @@ export function WelcomeScreen() {
   const aiEnabled = useAiEnabled();
   const bindings = useEffectiveBindings();
   const updateAvailable = Boolean(useUpdateCheck().data);
+  // Header tooltips carry the live binding, so a remap never leaves a stale hint.
+  const withBinding = (label: string, id: ActionId) => {
+    const binding = bindings.get(id);
+    return binding ? `${label} (${formatBinding(binding)})` : label;
+  };
+  const settingsLabel = updateAvailable
+    ? "Settings — update available"
+    : "Settings";
   const library = useFolderLibrary();
   const hasRecents =
     (settings.data?.recentRepos ?? []).length > 0 ||
@@ -89,7 +98,7 @@ export function WelcomeScreen() {
     {
       id: "manage-repository-folders",
       label: "Import / manage folders",
-      icon: FolderPlusIcon,
+      icon: FoldersIcon,
       variant: "outline",
       onClick: () => dispatchAction("manage-repository-folders"),
     },
@@ -125,7 +134,7 @@ export function WelcomeScreen() {
             variant="ghost"
             size="icon-sm"
             aria-label="User guide"
-            title="User guide (F1)"
+            title={withBinding("User guide", "show-help")}
             onClick={openHelp}
           >
             <QuestionIcon />
@@ -134,10 +143,8 @@ export function WelcomeScreen() {
             variant="ghost"
             size="icon-sm"
             className="relative"
-            aria-label={
-              updateAvailable ? "Settings — update available" : "Settings"
-            }
-            title={updateAvailable ? "Settings — update available" : "Settings"}
+            aria-label={settingsLabel}
+            title={withBinding(settingsLabel, "open-settings")}
             onClick={() => openSettings()}
           >
             <GearIcon />

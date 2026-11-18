@@ -40,7 +40,7 @@ import {
   type SessionHealth,
 } from "@/lib/git/types";
 import { setBitbucketTokenExpiresAt } from "@/lib/settings/api";
-import { useSettings } from "@/lib/settings/queries";
+import { useAiEnabled, useSettings } from "@/lib/settings/queries";
 import { useUiStore } from "@/lib/stores/ui";
 import { toastError } from "@/lib/toast";
 
@@ -520,6 +520,7 @@ function GitLabSignInBlock() {
  * input clears on success.
  */
 function GitLabAccount() {
+  const aiEnabled = useAiEnabled();
   const status = useGitlabReviewBotStatus();
   const setToken = useSetGitlabReviewToken();
   const clearToken = useClearGitlabReviewToken();
@@ -572,106 +573,112 @@ function GitLabAccount() {
 
       <GitLabSignInBlock />
 
-      <div className="space-y-2">
-        <p className="text-xs font-medium">AI review bot</p>
-        <p className="text-xs text-muted-foreground">
-          Add a GitLab project or group access token to post AI reviews as that
-          project's bot user instead of your signed-in account. Tokens are
-          stored in the OS keychain, never in app files.
-        </p>
-      </div>
+      {/* The review bot only posts AI reviews, so it hides with the rest of
+          the AI surface. */}
+      {aiEnabled && (
+        <>
+          <div className="space-y-2">
+            <p className="text-xs font-medium">AI review bot</p>
+            <p className="text-xs text-muted-foreground">
+              Add a GitLab project or group access token to post AI reviews as
+              that project's bot user instead of your signed-in account. Tokens
+              are stored in the OS keychain, never in app files.
+            </p>
+          </div>
 
-      <div className="max-w-xl space-y-4">
-        {/* The skeleton is the connected box's size; the docs below don't
-            depend on the status, so they render from the first frame. */}
-        {status.isPending ? (
-          <Skeleton className="h-22 w-full" />
-        ) : botLogin ? (
-          <div className="space-y-3 border">
-            <div className="flex items-center gap-2 border-b px-3 py-2">
-              <p className="min-w-0 truncate text-xs">
-                AI reviews post as{" "}
-                <span className="font-medium">@{botLogin}</span>
-              </p>
-              <Badge variant="secondary" className="ml-auto shrink-0">
-                connected
-              </Badge>
-            </div>
-            <div className="flex items-center gap-2 px-3 pb-3">
-              <Button
-                variant="destructive"
-                size="xs"
-                onClick={() => setConfirmClear(true)}
+          <div className="max-w-xl space-y-4">
+            {/* The skeleton is the connected box's size; the docs below don't
+              depend on the status, so they render from the first frame. */}
+            {status.isPending ? (
+              <Skeleton className="h-22 w-full" />
+            ) : botLogin ? (
+              <div className="space-y-3 border">
+                <div className="flex items-center gap-2 border-b px-3 py-2">
+                  <p className="min-w-0 truncate text-xs">
+                    AI reviews post as{" "}
+                    <span className="font-medium">@{botLogin}</span>
+                  </p>
+                  <Badge variant="secondary" className="ml-auto shrink-0">
+                    connected
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2 px-3 pb-3">
+                  <Button
+                    variant="destructive"
+                    size="xs"
+                    onClick={() => setConfirmClear(true)}
+                  >
+                    Disconnect
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <form
+                className="space-y-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  form.handleSubmit();
+                }}
               >
-                Disconnect
-              </Button>
+                <form.AppField name="token">
+                  {(field) => (
+                    <field.TextField
+                      type="password"
+                      label="Project or group access token"
+                      placeholder="Paste a GitLab project or group access token"
+                    />
+                  )}
+                </form.AppField>
+
+                <div className="flex items-center gap-2">
+                  <DisabledReasonButton
+                    type="submit"
+                    size="sm"
+                    disabled={!canSubmit || setToken.isPending}
+                    // No `reason`: the same text renders as the visible warning
+                    // beside the button, so announcing it would double up.
+                    title={
+                      canSubmit
+                        ? undefined
+                        : "Paste a project or group access token"
+                    }
+                  >
+                    {setToken.isPending && <Spinner data-icon="inline-start" />}
+                    Connect
+                  </DisabledReasonButton>
+                  {!canSubmit && (
+                    <span className="text-xs text-warning">
+                      Paste a project or group access token
+                    </span>
+                  )}
+                </div>
+
+                {error && <p className="text-xs text-destructive">{error}</p>}
+              </form>
+            )}
+
+            <div className="space-y-1.5 text-xs text-muted-foreground">
+              <p>
+                The token needs the <span className="font-mono">api</span> scope
+                and a role of <span className="font-medium">Maintainer</span> or{" "}
+                <span className="font-medium">Owner</span> to mint. On
+                gitlab.com, project access tokens require a{" "}
+                <span className="font-medium">Premium or Ultimate</span>{" "}
+                namespace (they're free on self-managed GitLab). This applies to
+                gitlab.com in this version.
+              </p>
+              <button
+                type="button"
+                className="cursor-pointer underline underline-offset-2"
+                onClick={() => openUrl(GITLAB_PROJECT_TOKEN_URL)}
+                title="Open the GitLab project access token docs"
+              >
+                Create one on GitLab
+              </button>
             </div>
           </div>
-        ) : (
-          <form
-            className="space-y-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
-            }}
-          >
-            <form.AppField name="token">
-              {(field) => (
-                <field.TextField
-                  type="password"
-                  label="Project or group access token"
-                  placeholder="Paste a GitLab project or group access token"
-                />
-              )}
-            </form.AppField>
-
-            <div className="flex items-center gap-2">
-              <DisabledReasonButton
-                type="submit"
-                size="sm"
-                disabled={!canSubmit || setToken.isPending}
-                // No `reason`: the same text renders as the visible warning
-                // beside the button, so announcing it would double up.
-                title={
-                  canSubmit
-                    ? undefined
-                    : "Paste a project or group access token"
-                }
-              >
-                {setToken.isPending && <Spinner data-icon="inline-start" />}
-                Connect
-              </DisabledReasonButton>
-              {!canSubmit && (
-                <span className="text-xs text-warning">
-                  Paste a project or group access token
-                </span>
-              )}
-            </div>
-
-            {error && <p className="text-xs text-destructive">{error}</p>}
-          </form>
-        )}
-
-        <div className="space-y-1.5 text-xs text-muted-foreground">
-          <p>
-            The token needs the <span className="font-mono">api</span> scope and
-            a role of <span className="font-medium">Maintainer</span> or{" "}
-            <span className="font-medium">Owner</span> to mint. On gitlab.com,
-            project access tokens require a{" "}
-            <span className="font-medium">Premium or Ultimate</span> namespace
-            (they're free on self-managed GitLab). This applies to gitlab.com in
-            this version.
-          </p>
-          <button
-            type="button"
-            className="cursor-pointer underline underline-offset-2"
-            onClick={() => openUrl(GITLAB_PROJECT_TOKEN_URL)}
-            title="Open the GitLab project access token docs"
-          >
-            Create one on GitLab
-          </button>
-        </div>
-      </div>
+        </>
+      )}
 
       <Dialog open={confirmClear} onOpenChange={setConfirmClear}>
         <DialogContent>

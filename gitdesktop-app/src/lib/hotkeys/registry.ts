@@ -46,7 +46,7 @@ export function isVisibleAction(action: ActionDef): boolean {
 export const ACTIONS = [
   {
     id: "manage-repository-folders",
-    label: "Manage repository folders / import folder",
+    label: "Import / manage repository folders",
     category: "Application",
     defaultBinding: null,
   },

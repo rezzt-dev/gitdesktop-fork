@@ -67,9 +67,7 @@ export function NavRail({
           className={cn("space-y-0.5", group.separated && "border-t pt-3")}
         >
           {group.label && (
-            <p className="micro-label px-2.5 pb-1">
-              {group.label}
-            </p>
+            <p className="micro-label px-2.5 pb-1">{group.label}</p>
           )}
           {group.items.map((item) => {
             const active = item.id === activeId;
@@ -88,7 +86,7 @@ export function NavRail({
                 // bold label, so it stays findable without relying on tone.
                 // Focus is a separate 1px outline, never the selection look.
                 className={cn(
-                  "flex w-full items-center gap-2.5 px-2.5 py-1.5 text-left text-[12.5px] outline-none transition-colors focus-visible:outline-1 focus-visible:outline-ring focus-visible:-outline-offset-1",
+                  "flex w-full items-center gap-2.5 px-2.5 py-1.5 text-left text-[12.5px] outline-none transition-colors focus-visible:outline-1 focus-visible:outline-solid focus-visible:outline-ring focus-visible:-outline-offset-1",
                   active
                     ? item.destructive
                       ? "bg-destructive/10 font-semibold text-destructive shadow-[inset_3px_0_0_0_var(--destructive)]"

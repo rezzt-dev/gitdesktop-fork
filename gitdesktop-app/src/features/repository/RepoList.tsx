@@ -11,6 +11,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { DisabledReasonButton } from "@/components/disabled-reason-button";
 import { PathText } from "@/components/path-text";
 import { ProviderIcon } from "@/components/provider-icon";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ import {
   FILTER_INPUT_CLASS,
   FILTER_ROW_CLASS,
   LIST_VIEWPORT_CLASS,
+  TOOLBAR_CLASS,
 } from "./repo-list-sizes";
 import { useOpenRepoByPath } from "./useOpenRepoByPath";
 
@@ -713,6 +715,8 @@ function RepoMenuItems({
   );
 }
 
+const NO_REPOS_REASON = "Open or import a repository first";
+
 export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
   const library = useFolderLibrary();
   const settings = useSettings();
@@ -726,8 +730,10 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
     view === "folders" ||
     (view === null && Boolean(library.data?.roots.length));
   return (
-    <div className="flex max-h-[428px] min-h-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 items-center gap-1 border-b px-2 py-1">
+    // No height cap here: the list viewport and the folder tree each cap
+    // themselves, and a cap on this box would clip their last rows.
+    <div className="flex min-h-0 flex-col overflow-hidden">
+      <div className={TOOLBAR_CLASS}>
         <Button
           size="sm"
           variant="ghost"
@@ -746,27 +752,29 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
         >
           Folders
         </Button>
-        <Button
-          size="sm"
+        <DisabledReasonButton
+          size="icon-sm"
           variant="ghost"
-          className="ml-auto"
+          wrapperClassName="ml-auto"
           disabled={!hasRepos}
+          reason={NO_REPOS_REASON}
           title="Fetch all managed repositories"
-          aria-label="Fetch all repositories"
+          aria-label="Fetch all managed repositories"
           onClick={() => showBatch({ mode: "fetch" })}
         >
           <ArrowsClockwiseIcon />
-        </Button>
-        <Button
-          size="sm"
+        </DisabledReasonButton>
+        <DisabledReasonButton
+          size="icon-sm"
           variant="ghost"
           disabled={!hasRepos}
+          reason={NO_REPOS_REASON}
           title="Pull all managed repositories"
-          aria-label="Pull all repositories"
+          aria-label="Pull all managed repositories"
           onClick={() => showBatch({ mode: "pull" })}
         >
           <ArrowDownIcon />
-        </Button>
+        </DisabledReasonButton>
         <Button
           size="sm"
           variant="ghost"

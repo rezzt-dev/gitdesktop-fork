@@ -238,6 +238,15 @@
     background: var(--selection);
     color: var(--selection-foreground);
   }
+  /* Default keyboard focus for anything without its own focus style: the Enki
+     1px ink outline, inset so scroll containers never clip it. Without this,
+     unstyled focusables (list rows, tree items) fall back to the browser's
+     blue auto ring. Components with their own focus treatment override it from
+     the utilities layer. */
+  :focus-visible {
+    outline: 1px solid var(--ring);
+    outline-offset: -1px;
+  }
   html {
     @apply font-sans;
     font-feature-settings: "ss01", "tnum";
@@ -256,8 +265,7 @@
   /* Thin, square scrollbars that sit on the canvas instead of on a track. */
   * {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent)
-      transparent;
+    scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
   }
 }
 
@@ -349,7 +357,9 @@
 :root [data-sonner-toaster] {
   font-family: var(--font-sans);
 }
-:root [data-sonner-toaster] [data-sonner-toast][data-styled="true"]
+:root
+  [data-sonner-toaster]
+  [data-sonner-toast][data-styled="true"]
   [data-description] {
   color: var(--muted-foreground);
 }
@@ -401,9 +411,11 @@
 
 /* @git-diff-view paints GitHub's blue-black chrome. Its neutral surfaces move
    onto the Enki ramp (the add/del tints are content and stay, so the Shiki
-   palette keeps the backgrounds it was tuned against). `:root` lifts the
-   specificity over the library sheet, which main.tsx imports last. */
-:root .diff-tailwindcss-wrapper .diff-style-root {
+   palette keeps the backgrounds it was tuned against). The library's dark
+   block is `.diff-tailwindcss-wrapper[data-theme="dark"] .diff-style-root`
+   and its sheet is imported last (main.tsx), so a tie loses: `:root` plus
+   `[data-theme]` puts this rule one step above it in both themes. */
+:root .diff-tailwindcss-wrapper[data-theme] .diff-style-root {
   --diff-border--: var(--border);
   --diff-plain-content--: var(--background-alt);
   --diff-expand-content--: var(--surface);

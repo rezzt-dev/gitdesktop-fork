@@ -78,7 +78,7 @@ function App() {
   useEffect(() => {
     if (interfaceZoom === undefined) return;
     void setInterfaceZoom(interfaceZoom).catch(() => {
-      toast.error("Could not apply interface zoom");
+      toast.error("Couldn't apply interface zoom");
     });
   }, [interfaceZoom]);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);

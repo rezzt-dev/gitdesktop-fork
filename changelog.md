@@ -22,9 +22,15 @@
 - corregir el ejemplo de promociones entre ramas para evitar destinos idénticos al origen
 - rehacer `claude.md` y `agents.md` con la estructura real del fork, la relacion con el upstream y el resumen de las guias
 - compilar en `scripts/build-and-install-gitdesktop.sh` con `CARGO_TARGET_DIR` en `~/.cache/gitdesktop-fork/target`, sin artefactos del actualizador y con error si no se genera el AppImage
+- pulir la interfaz: logotipo invertido en el tema claro, filas del árbol de carpetas alineadas, reintento ante errores de carga, motivo en los botones deshabilitados de sincronización y atajos reales en los tooltips
+- unificar la acción de carpetas como `Import / manage repository folders` y alinear las animaciones con la curva y los 180 ms del tema
+- rehacer `.docs/agent-docs/ui-ux-audit.md` con la auditoría real de esta app; la versión anterior describía otro proyecto
 
 #### CORREGIDO
 - corregir la `ñ` perdida en `AÑADIDO` y en los items de `changelog.md`
+- corregir el recorte de las últimas filas de la lista de repositorios bajo la barra `Recent / Folders`
+- restaurar el foco de teclado visible en los raíles de secciones y sustituir el anillo azul del navegador por el contorno de tinta del tema
+- llevar el canal de números de los diffs oscuros a las superficies neutras del tema y ocultar el bot de revisiones con ia de gitlab
 
 #### ELIMINADO
 - eliminar `.docs/guidelines/commit-guidelines.md` y `.docs/guidelines/pr-merge-release-guidelines.md`, sustituidas por las guias nuevas
@@ -49,9 +55,15 @@
 - correct the branch promotion example to avoid destinations identical to the source
 - rewrite `claude.md` and `agents.md` with the fork's real layout, the upstream relationship and the guides digest
 - build in `scripts/build-and-install-gitdesktop.sh` with `CARGO_TARGET_DIR` at `~/.cache/gitdesktop-fork/target`, without updater artifacts and failing if no AppImage is produced
+- polish the interface: inverted app mark in the light theme, aligned folder tree rows, retry on load errors, reasons on the disabled sync buttons and live shortcuts in the tooltips
+- unify the folder action as `Import / manage repository folders` and align animations with the theme's curve and 180 ms
+- rewrite `.docs/agent-docs/ui-ux-audit.md` with the real audit of this app; the previous version described another project
 
 #### FIXED
 - fix the lost `ñ` in `AÑADIDO` and in the items of `changelog.md`
+- fix the last repository list rows being clipped under the `Recent / Folders` toolbar
+- restore visible keyboard focus on the section rails and replace the browser's blue ring with the theme's ink outline
+- move the dark diff gutter onto the theme's neutral surfaces and hide the gitlab ai review bot
 
 #### REMOVED
 - remove `.docs/guidelines/commit-guidelines.md` and `.docs/guidelines/pr-merge-release-guidelines.md`, replaced by the new guides

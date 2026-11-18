@@ -17,6 +17,8 @@ import {
   LIST_VIEWPORT_CLASS,
   LIST_VIEWPORT_MAX_HEIGHT_PX,
   REPO_LIST_MAX_HEIGHT_PX,
+  TOOLBAR_CLASS,
+  TOOLBAR_HEIGHT_PX,
 } from "../src/features/repository/repo-list-sizes.ts";
 import {
   BOX_BORDER_PX,
@@ -48,6 +50,13 @@ const SIZES = {
 // and the exact tokens known not to change the height. A token in neither is a
 // decision for whoever adds it.
 const MIRRORS = {
+  TOOLBAR_CLASS: {
+    value: TOOLBAR_CLASS,
+    kind: "h",
+    sizedPrefix: "",
+    // `border-b` is inside the border-box `h-9`.
+    allowed: ["flex", "shrink-0", "items-center", "gap-1", "border-b", "px-2"],
+  },
   FILTER_ROW_CLASS: {
     value: FILTER_ROW_CLASS,
     kind: "p",
@@ -152,6 +161,10 @@ function sizeOf(name, ...override) {
 const UNRECOGNIZED = /unrecognized utility/;
 const VARIANT = /is a variant of the sized utility/;
 
+test("RepoList's toolbar height mirrors its h- class", () => {
+  assert.equal(sizeOf("TOOLBAR_CLASS"), TOOLBAR_HEIGHT_PX);
+});
+
 test("RepoList's filter row padding mirrors its p- class", () => {
   assert.equal(sizeOf("FILTER_ROW_CLASS"), FILTER_ROW_PADDING_PX);
 });
@@ -164,13 +177,14 @@ test("RepoList's viewport cap mirrors its variant max-h- class", () => {
   assert.equal(sizeOf("LIST_VIEWPORT_CLASS"), LIST_VIEWPORT_MAX_HEIGHT_PX);
 });
 
-test("REPO_LIST_MAX_HEIGHT_PX is 2 x padding + input + viewport cap", () => {
+test("REPO_LIST_MAX_HEIGHT_PX is toolbar + 2 x padding + input + viewport cap", () => {
   const derived =
+    sizeOf("TOOLBAR_CLASS") +
     2 * sizeOf("FILTER_ROW_CLASS") +
     sizeOf("FILTER_INPUT_CLASS") +
     sizeOf("LIST_VIEWPORT_CLASS");
   assert.equal(REPO_LIST_MAX_HEIGHT_PX, derived);
-  assert.equal(REPO_LIST_MAX_HEIGHT_PX, 428);
+  assert.equal(REPO_LIST_MAX_HEIGHT_PX, 464);
 });
 
 test("the Welcome column's heading gap mirrors its space-y- class", () => {
@@ -192,7 +206,7 @@ test("RECENT_REPO_LIST_MAX_HEIGHT_PX is heading + gap + 2 x border + RepoList", 
     2 * sizeOf("BOX_CLASS") +
     REPO_LIST_MAX_HEIGHT_PX;
   assert.equal(RECENT_REPO_LIST_MAX_HEIGHT_PX, derived);
-  assert.equal(RECENT_REPO_LIST_MAX_HEIGHT_PX, 458);
+  assert.equal(RECENT_REPO_LIST_MAX_HEIGHT_PX, 494);
 });
 
 // The rem part times 16 plus the px part rebuilds the 16px-root figure; any other
@@ -200,7 +214,7 @@ test("RECENT_REPO_LIST_MAX_HEIGHT_PX is heading + gap + 2 x border + RepoList", 
 const RESERVE_CSS = /^calc\((\d+(?:\.\d+)?)rem \+ (\d+)px\)$/;
 
 test("RECENT_REPO_LIST_MAX_HEIGHT_CSS is the px maximum as rem plus border px", () => {
-  assert.equal(RECENT_REPO_LIST_MAX_HEIGHT_CSS, "calc(28.5rem + 2px)");
+  assert.equal(RECENT_REPO_LIST_MAX_HEIGHT_CSS, "calc(30.75rem + 2px)");
   const m = RESERVE_CSS.exec(RECENT_REPO_LIST_MAX_HEIGHT_CSS);
   assert.ok(m, `unparseable reservation: ${RECENT_REPO_LIST_MAX_HEIGHT_CSS}`);
   assert.equal(

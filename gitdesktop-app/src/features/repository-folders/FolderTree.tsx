@@ -6,6 +6,7 @@ import {
 } from "@phosphor-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useId, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -188,15 +189,22 @@ export function FolderTree({
                   }
                 }}
               >
+                {/* A repository has no caret, but keeps the caret's slot so its
+                    glyph and name line up with the sibling folders at its level. */}
                 {entry.repository ? (
-                  <GitBranchIcon className="size-3.5 shrink-0" />
+                  <span aria-hidden className="size-3 shrink-0" />
                 ) : expanded ? (
-                  <CaretDownIcon className="size-3 shrink-0" />
+                  <CaretDownIcon aria-hidden className="size-3 shrink-0" />
                 ) : (
-                  <CaretRightIcon className="size-3 shrink-0" />
+                  <CaretRightIcon aria-hidden className="size-3 shrink-0" />
                 )}
-                {!entry.repository && (
-                  <FolderIcon className="size-3.5 shrink-0 text-muted-foreground" />
+                {entry.repository ? (
+                  <GitBranchIcon aria-hidden className="size-3.5 shrink-0" />
+                ) : (
+                  <FolderIcon
+                    aria-hidden
+                    className="size-3.5 shrink-0 text-muted-foreground"
+                  />
                 )}
                 <span className="min-w-0 truncate">{entry.name}</span>
               </button>
@@ -275,9 +283,19 @@ export function FolderTree({
         </ContextMenuContent>
       </ContextMenu>
       {library.isError && (
-        <p role="alert" className="p-2 text-xs text-destructive">
-          Could not load your folders. Try refreshing.
-        </p>
+        <div
+          role="alert"
+          className="flex items-center justify-between gap-2 border-t p-2 text-xs text-destructive"
+        >
+          <span>Couldn't load your folders.</span>
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => void library.refetch()}
+          >
+            Retry
+          </Button>
+        </div>
       )}
     </div>
   );

@@ -62,7 +62,7 @@ export function AppearanceSection() {
           ? { ...latest, interfaceZoom: current.interfaceZoom }
           : latest,
       );
-      toast.error("Could not save interface zoom");
+      toast.error("Couldn't save interface zoom");
     } finally {
       zoomSaving.current = false;
     }

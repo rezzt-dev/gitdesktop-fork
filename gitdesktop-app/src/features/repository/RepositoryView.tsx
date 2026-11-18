@@ -238,7 +238,7 @@ type RailId = (typeof RAIL_TABS)[number]["id"] | "more";
 const RAIL_IDS: RailId[] = ["changes", "history", "pulls", "more"];
 
 const RAIL_BUTTON_CLASS =
-  "relative flex h-9 w-full shrink-0 items-center justify-center outline-none transition-colors focus-visible:outline-1 focus-visible:outline-ring focus-visible:-outline-offset-1";
+  "relative flex h-9 w-full shrink-0 items-center justify-center outline-none transition-colors focus-visible:outline-1 focus-visible:outline-solid focus-visible:outline-ring focus-visible:-outline-offset-1";
 // Active carries a shape cue as well as the tokens: the Enki navigation rule,
 // a 3px ink line on the leading edge, the same mark as the section rail.
 const RAIL_ACTIVE_CLASS =
