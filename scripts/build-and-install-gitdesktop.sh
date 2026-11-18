@@ -6,11 +6,14 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPOSITORY_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 readonly APP_DIR="${REPOSITORY_DIR}/gitdesktop-app"
 readonly APP_VERSION="0.13.5"
-readonly APPIMAGE_SOURCE="${APP_DIR}/src-tauri/target/release/bundle/appimage/GitDesktop_${APP_VERSION}_amd64.AppImage"
+readonly CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/gitdesktop-fork"
+# El empaquetado del AppImage crea enlaces simbólicos y cambia permisos, algo que
+# los discos externos (ntfs/exfat/fuseblk) no permiten: target vive en el disco nativo.
+readonly CARGO_TARGET="${CACHE_DIR}/target"
+readonly APPIMAGE_SOURCE="${CARGO_TARGET}/release/bundle/appimage/GitDesktop_${APP_VERSION}_amd64.AppImage"
 readonly INSTALL_DIR="${HOME}/Applications"
 readonly INSTALL_PATH="${INSTALL_DIR}/GitDesktop_${APP_VERSION}_amd64_localbuild.AppImage"
 readonly COMMAND_PATH="${HOME}/.local/bin/gitdesktop"
-readonly CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/gitdesktop-fork"
 readonly TOTAL_STEPS=5
 
 WORK_DIR="$(mktemp -d)"
@@ -191,15 +194,19 @@ fi
 show_ok "${LABEL}" "${STEP_ELAPSED}"
 
 next_step 'Compilando GitDesktop'
-run_step "${LABEL}" pnpm tauri build --bundles appimage
-if (( STEP_STATUS == 0 )); then
-  show_ok "${LABEL}" "${STEP_ELAPSED}"
-elif [[ "${APPIMAGE_SOURCE}" -nt "${START_MARKER}" ]]; then
-  show_warn "${LABEL} ${DIM}(AppImage generado; Tauri devolvió ${STEP_STATUS}, suele ser la clave de firma del actualizador)${RESET}"
-else
+mkdir -p "${CARGO_TARGET}"
+# createUpdaterArtifacts exige la clave privada del actualizador; no hace falta en local.
+run_step "${LABEL}" env CARGO_TARGET_DIR="${CARGO_TARGET}" NO_STRIP=true \
+  pnpm tauri build --bundles appimage --config '{"bundle":{"createUpdaterArtifacts":false}}'
+if (( STEP_STATUS != 0 )); then
   show_fail "${LABEL}"
-  die "La compilación falló y no se generó el AppImage."
+  die "La compilación falló."
 fi
+[[ -f "${APPIMAGE_SOURCE}" && "${APPIMAGE_SOURCE}" -nt "${START_MARKER}" ]] || {
+  show_fail "${LABEL}"
+  die "La compilación terminó pero no se generó el AppImage."
+}
+show_ok "${LABEL}" "${STEP_ELAPSED}"
 
 next_step 'Instalando el AppImage'
 install_start=${SECONDS}
