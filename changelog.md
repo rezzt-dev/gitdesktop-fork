@@ -12,6 +12,7 @@
 - anadir `.docs/tema-diseno-estilo-enki.md` con el lenguaje visual de referencia y `.docs/agent-docs/ui-ux-audit.md` con la auditoria ui/ux en curso
 
 #### CAMBIADO
+- exigir español de españa y conservar `ñ` y `Ñ`, incluso en formatos que pidan escribir sin acentos
 
 - aplicar el tema visual enki en `gitdesktop-app/src/App.css`: paleta monocroma, esquinas rectas y tinta sobre fondo en modo claro y oscuro
 - renovar la navegacion lateral, la pantalla de bienvenida, los ajustes y el terminal con la regla de 3px en el elemento activo y los nuevos encabezados
@@ -34,6 +35,7 @@
 - add `.docs/tema-diseno-estilo-enki.md` with the reference visual language and `.docs/agent-docs/ui-ux-audit.md` with the ongoing ui/ux audit
 
 #### CHANGED
+- require spanish from spain and preserve `ñ` and `Ñ`, including formats that omit vowel accents
 
 - apply the enki visual theme in `gitdesktop-app/src/App.css`: monochrome palette, square corners and ink on background in light and dark modes
 - renew the side navigation, welcome screen, settings and terminal with the 3px active rule and the new headings
