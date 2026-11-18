@@ -113,10 +113,12 @@ export function WelcomeScreen() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center justify-between border-b px-4 py-3">
-        <div className="flex items-center gap-2">
+      <header className="flex h-11 shrink-0 items-center justify-between border-b px-4">
+        <div className="flex items-center gap-2.5">
           <BrandMark className="size-5" />
-          <span className="text-sm font-medium">GitDesktop</span>
+          <span className="text-[13px] font-bold tracking-[0.16em] uppercase">
+            GitDesktop
+          </span>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -166,7 +168,7 @@ export function WelcomeScreen() {
             {!settings.isPending && (
               <>
                 {settings.data && !settings.data.seenGuideNudge && (
-                  <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border bg-muted/40 px-3 py-2">
+                  <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border bg-card px-3 py-2">
                     <span className="flex items-center gap-2 text-xs text-muted-foreground">
                       <BookOpenIcon className="size-4 shrink-0 text-foreground" />
                       New to GitDesktop? The built-in guide walks through the
@@ -187,13 +189,14 @@ export function WelcomeScreen() {
                   className="grid content-start items-start gap-y-8 md:min-h-(--recent-repos-max) md:grid-cols-2"
                   style={hasRecents ? RECENT_REPOS_RESERVE : undefined}
                 >
-                  <div className="flex flex-col gap-6 md:pr-10">
-                    <div className="space-y-2">
-                      <h1 className="font-heading text-2xl font-semibold tracking-tight text-balance">
+                  <div className="flex flex-col gap-8 md:pr-10">
+                    <div className="space-y-3">
+                      <p className="eyebrow">Get started</p>
+                      <h1 className="page-title">
                         The whole loop,
                         <br className="hidden sm:block" /> one window.
                       </h1>
-                      <p className="text-xs/relaxed text-muted-foreground">
+                      <p className="page-subtitle max-w-[42ch]">
                         Open a repository to start reviewing, committing, and
                         shipping
                         {aiEnabled
@@ -212,14 +215,14 @@ export function WelcomeScreen() {
                                 key={id}
                                 variant={variant}
                                 onClick={onClick}
-                                className="w-full justify-between"
+                                className="h-10 w-full justify-between px-3 text-[13px]"
                               >
                                 <span className="flex items-center gap-2">
                                   <Icon className="size-4" />
                                   {label}
                                 </span>
                                 {binding && (
-                                  <span className="text-[11px] tabular-nums opacity-60">
+                                  <span className="font-mono text-[10.5px] tabular-nums opacity-70">
                                     {formatBinding(binding)}
                                   </span>
                                 )}

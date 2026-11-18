@@ -65,15 +65,18 @@ export function Terminal({
 
     const term = new XTerm({
       fontFamily:
-        'ui-monospace, "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace',
+        '"JetBrains Mono Variable", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace',
       fontSize: 12,
       cursorBlink: true,
-      // A terminal stays dark regardless of app theme (conventional + readable).
+      // A terminal stays dark regardless of app theme (conventional + readable),
+      // on the Better Dark Dev canvas with the shared ink selection.
       theme: {
-        background: "#0b0b0c",
-        foreground: "#e4e4e7",
-        cursor: "#a1a1aa",
-        selectionBackground: "#3f3f46",
+        background: "#080808",
+        foreground: "#eeeeee",
+        cursor: "#eeeeee",
+        cursorAccent: "#181818",
+        selectionBackground: "#eeeeee",
+        selectionForeground: "#181818",
       },
     });
     const fit = new FitAddon();

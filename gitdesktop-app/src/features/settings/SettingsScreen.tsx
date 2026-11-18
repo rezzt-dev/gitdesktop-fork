@@ -250,7 +250,7 @@ export function SettingsScreen() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center gap-2 border-b px-3 py-2">
+      <header className="flex h-11 shrink-0 items-center gap-2 border-b px-3">
         <Button
           variant="ghost"
           size="icon-sm"
@@ -259,7 +259,7 @@ export function SettingsScreen() {
         >
           <ArrowLeftIcon />
         </Button>
-        <span className="text-sm font-medium">Settings</span>
+        <h1 className="section-title">Settings</h1>
       </header>
 
       {settings.isPending ? (
@@ -274,7 +274,7 @@ export function SettingsScreen() {
             groups={railGroups}
             activeId={activePanel}
             onSelect={(id) => setPanel(id as PanelId)}
-            className="w-44 border-r p-2"
+            className="w-52 border-r p-2"
           />
           {/* overflow-hidden contains the panel's natural height (vendored Root is
               `relative`-only) so a tall settings panel can't leak a window scrollbar. */}

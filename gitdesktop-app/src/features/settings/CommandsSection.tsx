@@ -217,7 +217,7 @@ export const CommandsSection = withForm({
       <section className="space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-sm font-medium">Slash commands</h2>
+            <h2 className="screen-title pb-1">Slash commands</h2>
             <p className="text-xs text-muted-foreground">
               Reusable prompts for the agent composer — type{" "}
               <code className="font-mono">/</code> to pick one. They appear

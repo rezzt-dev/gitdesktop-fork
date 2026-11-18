@@ -2,12 +2,19 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/space-grotesk";
 
 @custom-variant dark (&:is(.dark *));
 
+/* Enki visual language: Swiss editorial brutalism, monochrome and dark-first.
+   Space Grotesk carries the interface; JetBrains Mono is reserved for data
+   (hashes, paths, counts, code) and micro-labels, marked with `font-mono`. */
 @theme inline {
-  --font-heading: var(--font-mono);
-  --font-mono: "JetBrains Mono Variable", monospace;
+  --font-sans: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --color-ink: var(--ink);
+  --color-ink-on: var(--ink-on);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -47,77 +54,82 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Rectangular geometry everywhere: every radius step resolves to zero.
+     `rounded-full` is untouched — circles stay reserved for things that are
+     circular by nature (status dots, avatars, radio marks). */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
 
-/* Elevation. Crisp, low-spread shadows tuned to the flat, ring-separated
-   surface language: floating surfaces (menus, popovers, dialogs, selects,
-   drawers) read as lifted without the soft "material" blobs that would fight
-   the square, terminal aesthetic. The existing `shadow-sm/md/lg/xl` utilities
-   already on every overlay pick these up, so depth lands app-wide with no
-   component edits. Each layer references a per-theme shadow ink
-   (`--gd-shadow-weak` / `--gd-shadow-strong`, defined under :root and .dark)
-   so the same utility deepens appropriately against a dark canvas. */
+/* Elevation comes from tone and hairlines, not from soft blobs: floating
+   surfaces get one tight shadow (never wider than 8px of blur) that only
+   detaches them from the content underneath. */
 @theme {
-  --shadow-2xs: 0 1px 1px -1px var(--gd-shadow-weak);
-  --shadow-xs: 0 1px 2px -1px var(--gd-shadow-weak);
-  --shadow-sm:
-    0 1px 2px -1px var(--gd-shadow-weak), 0 2px 4px -2px var(--gd-shadow-weak);
-  --shadow-md:
-    0 2px 4px -2px var(--gd-shadow-weak),
-    0 6px 14px -4px var(--gd-shadow-strong);
-  --shadow-lg:
-    0 4px 8px -3px var(--gd-shadow-strong),
-    0 14px 32px -8px var(--gd-shadow-strong);
-  --shadow-xl:
-    0 8px 18px -6px var(--gd-shadow-strong),
-    0 28px 56px -12px var(--gd-shadow-strong);
-  --shadow-2xl:
-    0 12px 28px -8px var(--gd-shadow-strong),
-    0 40px 80px -16px var(--gd-shadow-strong);
+  --shadow-2xs: 0 1px 0 0 var(--gd-shadow-weak);
+  --shadow-xs: 0 1px 1px 0 var(--gd-shadow-weak);
+  --shadow-sm: 0 1px 2px 0 var(--gd-shadow-weak);
+  --shadow-md: 0 2px 4px -1px var(--gd-shadow-strong);
+  --shadow-lg: 0 4px 8px -2px var(--gd-shadow-strong);
+  --shadow-xl: 0 6px 8px -2px var(--gd-shadow-strong);
+  --shadow-2xl: 0 8px 8px -2px var(--gd-shadow-strong);
+  /* Shared motion profile: 150 ms for interaction, cubic ease-out. */
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
 }
 
+/* Light: the Enki structure on paper. Neutral at zero chroma, ink #111. */
 :root {
-  /* Surface → interaction → ink. Hover/selection never invert the text polarity:
-     secondary labels, paths and status icons must stay readable inside a row. */
   color-scheme: light;
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.23 0 0);
-  --card: oklch(1 0 0);
+  --radius: 0px;
+  --ink: #111111;
+  --ink-on: #f6f6f6;
+  --background: #f4f4f4;
+  --background-alt: #f8f8f8;
+  --sidebar: #ececec;
+  --surface: #f1f1f1;
+  --card: #fafafa;
+  --row-hover: #e8e8e8;
+  --input-background: #ffffff;
+  --foreground: var(--ink);
   --card-foreground: var(--foreground);
-  --popover: var(--card);
+  --popover: #fbfbfb;
   --popover-foreground: var(--foreground);
-  --primary: oklch(0.43 0.095 165);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0 0);
+  --primary: var(--ink);
+  --primary-foreground: var(--ink-on);
+  --secondary: #e6e6e6;
   --secondary-foreground: var(--foreground);
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.46 0 0);
-  --accent: oklch(0.922 0.035 165);
+  --muted: var(--row-hover);
+  /* ≥ 4.5:1 on every light surface, sidebar included. */
+  --muted-foreground: #565656;
+  /* Disabled-only grey; never for information the user needs. */
+  --faint-foreground: #8a8a8a;
+  --accent: #dcdcdc;
   --accent-foreground: var(--foreground);
-  --destructive: oklch(0.53 0.21 27);
-  --success: oklch(0.46 0.1 150);
-  --warning: oklch(0.46 0.1 65);
-  --info: oklch(0.48 0.14 250);
-  --merged: oklch(0.5 0.18 300);
-  --border: oklch(0.88 0 0);
-  --input: oklch(0.63 0 0);
-  --ring: oklch(0.5 0.11 165);
-  --chart-1: oklch(0.43 0.095 165);
-  --gd-shadow-weak: oklch(0.21 0.02 260 / 0.07);
-  --gd-shadow-strong: oklch(0.21 0.02 260 / 0.12);
-  --chart-2: oklch(0.48 0.14 250);
-  --chart-3: oklch(0.5 0.18 300);
-  --chart-4: oklch(0.46 0.1 65);
-  --chart-5: oklch(0.46 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.965 0 0);
+  --destructive: #c42b2b;
+  --success: #23764a;
+  --warning: #8a5a0b;
+  --info: #2b5c9c;
+  --merged: #6d3fa6;
+  --border: color-mix(in srgb, var(--ink) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--ink) 22%, transparent);
+  /* Form-control boundary: ≥ 3:1 against the canvas (WCAG 1.4.11). */
+  --input: #8c8c8c;
+  --ring: var(--ink);
+  --overlay: rgb(0 0 0 / 0.28);
+  --gd-shadow-weak: rgb(0 0 0 / 0.06);
+  --gd-shadow-strong: rgb(0 0 0 / 0.12);
+  --chart-1: var(--ink);
+  --chart-2: var(--info);
+  --chart-3: var(--merged);
+  --chart-4: var(--warning);
+  --chart-5: var(--muted-foreground);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
@@ -125,60 +137,68 @@
   --sidebar-accent-foreground: var(--accent-foreground);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
-  --selection: var(--accent);
-  --selection-foreground: var(--accent-foreground);
+  /* Selection inverts ink and canvas, like a primary action. */
+  --selection: var(--ink);
+  --selection-foreground: var(--ink-on);
 }
 
+/* Dark: the Better Dark Dev palette. Surfaces climb #080808 → #101010;
+   interaction states reach #151515 / #181818; ink is #EEEEEE. */
 .dark {
   color-scheme: dark;
-  --background: oklch(0.17 0 0);
-  --foreground: oklch(0.92 0 0);
-  --card: oklch(0.215 0 0);
-  --primary: oklch(0.82 0.1 165);
-  --primary-foreground: oklch(0.19 0 0);
-  --secondary: oklch(0.265 0 0);
-  --muted-foreground: oklch(0.74 0 0);
-  --accent: oklch(0.33 0.03 165);
-  --destructive: oklch(0.77 0.14 22);
-  --success: oklch(0.8 0.13 150);
-  --warning: oklch(0.83 0.12 75);
-  --info: oklch(0.77 0.115 250);
-  --merged: oklch(0.79 0.125 305);
-  --border: oklch(0.34 0 0);
-  --input: oklch(0.5 0 0);
-  --ring: oklch(0.82 0.11 165);
-  --gd-shadow-weak: oklch(0 0 0 / 0.44);
-  --gd-shadow-strong: oklch(0 0 0 / 0.6);
-  --chart-1: var(--primary);
-  --chart-2: var(--info);
-  --chart-3: var(--merged);
-  --chart-4: var(--warning);
-  --chart-5: var(--muted-foreground);
-  --sidebar: oklch(0.195 0 0);
+  --ink: #eeeeee;
+  --ink-on: #181818;
+  --background: #080808;
+  --background-alt: #0a0a0a;
+  --sidebar: #0a0a0a;
+  --surface: #0d0d0d;
+  --card: #101010;
+  --row-hover: #151515;
+  --input-background: #0c0c0c;
+  --popover: #101010;
+  --secondary: #181818;
+  /* Better Dark Dev's text-secondary: 6.4:1 on the canvas. Its #585858
+     "muted" fails AA, so it is kept only as the disabled tone below. */
+  --muted-foreground: #929292;
+  --faint-foreground: #585858;
+  --accent: #1f1f1f;
+  --destructive: #ff6b6b;
+  --success: #54ad7d;
+  --warning: #d9a952;
+  --info: #86a8d6;
+  --merged: #b497dc;
+  --input: #5e5e5e;
+  --overlay: rgb(0 0 0 / 0.55);
+  --gd-shadow-weak: rgb(0 0 0 / 0.5);
+  --gd-shadow-strong: rgb(0 0 0 / 0.7);
 }
 
-/* Slate keeps the same semantic contracts on a softer, cool neutral ramp.
-   It always accompanies .dark so editors and dark-keyed utilities stay in sync. */
+/* Slate: the same monochrome contracts on a lifted, cool-tinted dark ramp
+   for long sessions. It always accompanies .dark. */
 .dark.slate {
-  --background: oklch(0.245 0.015 257);
-  --foreground: oklch(0.9 0.014 258);
-  --card: oklch(0.285 0.015 257);
-  --secondary: oklch(0.33 0.016 257);
-  --muted-foreground: oklch(0.76 0.014 255);
-  --accent: oklch(0.365 0.023 257);
-  --border: oklch(0.41 0.016 257);
-  --input: oklch(0.55 0.016 257);
-  --sidebar: oklch(0.265 0.015 257);
+  --ink: #e3e6eb;
+  --ink-on: #1b1e23;
+  --background: #1b1e23;
+  --background-alt: #1e2126;
+  --sidebar: #1e2126;
+  --surface: #20242a;
+  --card: #23272d;
+  --row-hover: #282c33;
+  --input-background: #1b1e23;
+  --popover: #23272d;
+  --secondary: #2b3037;
+  --muted-foreground: #a3a9b3;
+  --faint-foreground: #6e747d;
+  --accent: #333841;
+  --input: #6c727c;
+  --overlay: rgb(5 7 10 / 0.5);
 }
 
 /* Shiki diff/JSON token colors. The Shiki theme (features/diff/shiki-theme.ts)
    emits these var() references as each token's inline `color:`, so a theme
    toggle re-colors already-tokenized spans by cascade — nothing re-tokenizes.
-   Kept as raw hex (not the OKLCH ramp above), and as its own block so the
-   OKLCH ramp stays a single readable unit: it's the GitHub syntax palette,
-   each theme tuned to stay readable on its own add/del line backgrounds
-   (the dark one against `#18271f` / `#23191c`) where stock editor themes
-   wash out. */
+   Syntax color is content, not chrome: it keeps its own palette, tuned to stay
+   readable on the add/del row tints. */
 :root {
   --gd-syn-fg: #1f2328;
   /* #59636e: ≥4.5:1 on add-row and conflict tints (the GitHub stock #6e7781
@@ -195,16 +215,16 @@
 }
 
 .dark {
-  --gd-syn-fg: #e6edf3;
-  --gd-syn-comment: #8b949e;
-  --gd-syn-keyword: #ff7b72;
-  --gd-syn-string: #a5d6ff;
-  --gd-syn-number: #79c0ff;
-  --gd-syn-variable: #ffa657;
-  --gd-syn-func: #d2a8ff;
-  --gd-syn-type: #7ee787;
-  --gd-syn-tag: #7ee787;
-  --gd-syn-attr: #79c0ff;
+  --gd-syn-fg: #e6e6e6;
+  --gd-syn-comment: #8b8f94;
+  --gd-syn-keyword: #ff8b8b;
+  --gd-syn-string: #a8cfe8;
+  --gd-syn-number: #8fb8e0;
+  --gd-syn-variable: #e3b46b;
+  --gd-syn-func: #c6aee6;
+  --gd-syn-type: #7cc49b;
+  --gd-syn-tag: #7cc49b;
+  --gd-syn-attr: #8fb8e0;
 }
 
 @layer base {
@@ -219,11 +239,25 @@
     color: var(--selection-foreground);
   }
   html {
-    @apply font-mono;
-    /* JetBrains Mono ships programming ligatures on, and this rule puts the whole
-       document in it: literal text the app must render verbatim (`--flag`, `->`,
-       `!=`, `::` in diffs and inputs) would otherwise compose into one glyph. */
+    @apply font-sans;
+    font-feature-settings: "ss01", "tnum";
+    /* JetBrains Mono ships programming ligatures on: literal text the app must
+       render verbatim (`--flag`, `->`, `!=`, `::` in diffs and inputs) would
+       otherwise compose into one glyph. */
     font-variant-ligatures: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  /* Thin, square scrollbars that sit on the canvas instead of on a track. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent)
+      transparent;
   }
 }
 
@@ -238,12 +272,224 @@
     background-color: var(--accent);
     color: var(--accent-foreground);
   }
+  /* Menu labels read as micro-labels: mono, small, spaced, uppercase. */
+  :is(
+    [data-slot="dropdown-menu-label"],
+    [data-slot="context-menu-label"],
+    [data-slot="menubar-label"],
+    [data-slot="select-label"],
+    [data-slot="combobox-label"]
+  ) {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+}
+
+/* Vendored primitives (src/components/ui/, never edited) are re-skinned here
+   by their data-slot. These rules are unlayered on purpose: they must beat the
+   primitives' own utility classes, which live in the utilities layer. */
+:is(
+  [data-slot="popover-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="select-content"],
+  [data-slot="combobox-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="dialog-content"]
+) {
+  --tw-ring-color: var(--border-strong);
+}
+
+:is(
+  [data-slot="dialog-overlay"],
+  [data-slot="sheet-overlay"],
+  [data-slot="drawer-overlay"]
+) {
+  background-color: var(--overlay);
+  backdrop-filter: none;
+}
+
+:is(
+  [data-slot="dialog-title"],
+  [data-slot="sheet-title"],
+  [data-slot="drawer-title"],
+  [data-slot="card-title"],
+  [data-slot="empty-title"]
+) {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+[data-slot="dialog-title"] {
+  font-size: 0.9375rem;
+}
+
+/* Outline buttons are Enki's secondary "pill": transparent, ink-ruled, square.
+   The variant has no data hook, so it is matched by the class string only the
+   outline variant emits. */
+[data-slot="button"][class*="dark:bg-input/30"] {
+  background-color: transparent;
+  border-color: color-mix(in srgb, var(--ink) 28%, transparent);
+}
+[data-slot="button"][class*="dark:bg-input/30"]:not(:disabled):hover,
+[data-slot="button"][class*="dark:bg-input/30"][aria-expanded="true"] {
+  background-color: color-mix(in srgb, var(--ink) 7%, transparent);
+  border-color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
+/* Sonner ships its own font stack, and with no theme provider it falls back
+   to its light description grey (#3f3f3f), unreadable on a dark toast. */
+:root [data-sonner-toaster] {
+  font-family: var(--font-sans);
+}
+:root [data-sonner-toaster] [data-sonner-toast][data-styled="true"]
+  [data-description] {
+  color: var(--muted-foreground);
+}
+
+/* Fields sit on their own recessed tone (Better Dark Dev's input background),
+   a step darker than the panel that holds them. */
+:is(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"],
+  [data-slot="combobox-chips"]
+):not(:disabled) {
+  background-color: var(--input-background);
+}
+
+[data-slot="switch"],
+[data-slot="switch-thumb"] {
+  border-radius: 0;
+}
+
+[data-slot="kbd"] {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+[data-slot="scroll-area-thumb"] {
+  border-radius: 0;
+  background-color: color-mix(in srgb, var(--ink) 20%, transparent);
+}
+
+[data-slot="tabs-trigger"][data-active] {
+  font-weight: 600;
+}
+
+/* Segmented tabs select by inversion: the active segment is filled with ink
+   and its label turns to the canvas tone. The line variant keeps its rule. */
+[data-slot="tabs-list"][data-variant="default"] {
+  background-color: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+[data-slot="tabs-list"][data-variant="default"]
+  [data-slot="tabs-trigger"][data-active] {
+  background-color: var(--ink);
+  border-color: transparent;
+  color: var(--ink-on);
+}
+
+/* @git-diff-view paints GitHub's blue-black chrome. Its neutral surfaces move
+   onto the Enki ramp (the add/del tints are content and stay, so the Shiki
+   palette keeps the backgrounds it was tuned against). `:root` lifts the
+   specificity over the library sheet, which main.tsx imports last. */
+:root .diff-tailwindcss-wrapper .diff-style-root {
+  --diff-border--: var(--border);
+  --diff-plain-content--: var(--background-alt);
+  --diff-expand-content--: var(--surface);
+  --diff-empty-content--: var(--surface);
+  --diff-plain-lineNumber--: var(--surface);
+  --diff-expand-lineNumber--: var(--surface);
+  --diff-plain-lineNumber-color--: var(--muted-foreground);
+  --diff-expand-lineNumber-color--: var(--muted-foreground);
+  --diff-hunk-content--: var(--card);
+  --diff-hunk-content-color--: var(--muted-foreground);
+  --diff-hunk-lineNumber--: var(--secondary);
+  --diff-hunk-lineNumber-hover--: var(--accent);
+  --diff-add-widget--: var(--ink);
+  --diff-add-widget-color--: var(--ink-on);
+}
+
+/* Diff rows are code: keep them monospaced whatever the interface font. */
+.diff-tailwindcss-wrapper,
+.cm-editor {
+  font-family: var(--font-mono);
+}
+
+/* Editorial type scale. One eyebrow per screen header (never above every
+   section); titles tight, micro-labels mono and widely spaced. */
+@utility page-title {
+  font-family: var(--font-heading);
+  font-size: 2.125rem;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+@utility screen-title {
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@utility page-subtitle {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@utility section-title {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@utility micro-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
 
 /* Shared custom-list contract: selection persists while keyboard focus remains
-   independently visible. Disabled rows cannot pick up a hover affordance. */
+   independently visible. Hover is a 5 % ink wash, selection a 10 % wash plus
+   an ink rule on the leading edge; focus is a 1px ink outline, so the three
+   states never read the same. Disabled rows cannot pick up a hover. */
 @utility interactive-row {
-  outline-offset: -2px;
+  outline-offset: -1px;
+  transition: background-color 150ms var(--ease-out);
   &:not(:disabled):hover {
     background-color: var(--muted);
     color: var(--foreground);
@@ -251,9 +497,10 @@
   &[aria-selected="true"] {
     background-color: var(--accent);
     color: var(--accent-foreground);
+    box-shadow: inset 2px 0 0 0 var(--ink);
   }
   &:focus-visible {
-    outline: 2px solid var(--ring);
+    outline: 1px solid var(--ring);
   }
 }
 
@@ -271,12 +518,12 @@
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* A calm crossfade between top-level screens (welcome / repo / settings /
+/* A short crossfade between top-level screens (welcome / repo / settings /
    help), driven by startViewTransition() in the ui store. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 200ms;
-  animation-timing-function: var(--ease-out-quart);
+  animation-duration: 180ms;
+  animation-timing-function: var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -295,20 +542,20 @@
 
 /* The diff line-selection highlight (drag-to-stage individual lines). We paint
    the `gd-line-selected` class ourselves (StagingDiffView), so fill those cells
-   with a clear accent. The inset-shadow trick tints over the cell's own add/del
+   with an ink wash. The inset-shadow trick tints over the cell's own add/del
    background. Unified paints whole rows; split paints the number + content cells
    of the selected SIDE, so the tint says which half of a change is selected. */
 .diff-tailwindcss-wrapper tr.gd-line-selected td,
 .diff-tailwindcss-wrapper td.gd-line-selected {
   box-shadow: inset 0 0 0 9999px
-    color-mix(in oklch, var(--ring) 24%, transparent) !important;
+    color-mix(in oklch, var(--ring) 16%, transparent) !important;
 }
 .diff-tailwindcss-wrapper tr.gd-line-selected td:first-child,
 .diff-tailwindcss-wrapper td.diff-line-old-num.gd-line-selected,
 .diff-tailwindcss-wrapper td.diff-line-new-num.gd-line-selected {
   box-shadow:
     inset 3px 0 0 0 var(--ring),
-    inset 0 0 0 9999px color-mix(in oklch, var(--ring) 24%, transparent) !important;
+    inset 0 0 0 9999px color-mix(in oklch, var(--ring) 16%, transparent) !important;
 }
 
 /* @git-diff-view's expand controls carry BOTH a native `title` and their own

@@ -7,7 +7,7 @@ export const InstructionsSection = withForm({
     return (
       <section className="space-y-4 border-t pt-4">
         <div>
-          <h2 className="text-sm font-medium">Instructions</h2>
+          <h2 className="screen-title pb-1">Instructions</h2>
           <p className="text-xs text-muted-foreground">
             Applied to every AI generation. Use instructions for team
             conventions, e.g. "Follow Conventional Commits" or "Explain intent,

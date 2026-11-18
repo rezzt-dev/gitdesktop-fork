@@ -67,7 +67,7 @@ export function NavRail({
           className={cn("space-y-0.5", group.separated && "border-t pt-3")}
         >
           {group.label && (
-            <p className="px-2 pb-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <p className="micro-label px-2.5 pb-1">
               {group.label}
             </p>
           )}
@@ -83,23 +83,26 @@ export function NavRail({
                 tabIndex={active ? 0 : -1}
                 aria-current={active ? "page" : undefined}
                 onClick={() => onSelect(item.id)}
+                // Enki navigation entry: hover is a 5 % ink wash, press 10 %;
+                // the active entry adds a 3px leading rule in its own ink and a
+                // bold label, so it stays findable without relying on tone.
+                // Focus is a separate 1px outline, never the selection look.
                 className={cn(
-                  "flex w-full items-center gap-2 px-2 py-1.5 text-left text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                  "flex w-full items-center gap-2.5 px-2.5 py-1.5 text-left text-[12.5px] outline-none transition-colors focus-visible:outline-1 focus-visible:outline-ring focus-visible:-outline-offset-1",
                   active
                     ? item.destructive
-                      ? "bg-destructive/10 font-medium text-destructive"
-                      : "bg-accent font-medium text-accent-foreground"
+                      ? "bg-destructive/10 font-semibold text-destructive shadow-[inset_3px_0_0_0_var(--destructive)]"
+                      : "bg-accent font-semibold text-foreground shadow-[inset_3px_0_0_0_var(--ink)]"
                     : item.destructive
-                      ? "text-destructive/80 hover:bg-destructive/5 hover:text-destructive"
-                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                      ? "text-destructive hover:bg-destructive/5 active:bg-destructive/10"
+                      : "text-muted-foreground hover:bg-ink/5 hover:text-foreground active:bg-ink/10",
                 )}
               >
                 {item.icon && (
                   <span
                     aria-hidden
                     className={cn(
-                      "flex size-4 shrink-0 items-center justify-center *:size-4 transition-opacity",
-                      !active && "opacity-80",
+                      "flex size-4 shrink-0 items-center justify-center *:size-4",
                     )}
                   >
                     {item.icon}

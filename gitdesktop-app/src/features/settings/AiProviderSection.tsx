@@ -876,7 +876,7 @@ export const AiProviderSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">AI provider</h2>
+          <h2 className="screen-title pb-1">AI provider</h2>
           <p className="text-xs text-muted-foreground">
             Powers commit message and pull request generation. API keys are
             stored in the OS keychain, never in app files.

@@ -116,7 +116,7 @@ export const NotificationsSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">Notifications</h2>
+          <h2 className="screen-title pb-1">Notifications</h2>
           {/* The agent-tasks clause names a row that Hide AI removes, so it is
               gated exactly like the same sentence in the user guide. */}
           <p className="text-xs text-muted-foreground">

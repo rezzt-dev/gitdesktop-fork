@@ -61,7 +61,7 @@ export const UpdatesSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">Updates</h2>
+          <h2 className="screen-title pb-1">Updates</h2>
           <p className="text-xs text-muted-foreground">
             GitDesktop updates itself from GitHub Releases — signed and
             verified, installed only with your consent. Current version:{" "}

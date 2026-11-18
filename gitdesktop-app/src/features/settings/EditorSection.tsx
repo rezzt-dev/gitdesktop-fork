@@ -83,7 +83,7 @@ export const EditorSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">External editor</h2>
+          <h2 className="screen-title pb-1">External editor</h2>
           <p className="text-xs text-muted-foreground">
             Adds an "Open in …" entry to the file context menu. Installed
             editors are detected automatically.

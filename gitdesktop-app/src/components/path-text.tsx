@@ -71,7 +71,7 @@ export function PathText({
     // already zeroes a flex item's automatic minimum size.)
     <span
       ref={ref}
-      className={cn("flex min-w-0", className)}
+      className={cn("flex min-w-0 font-mono", className)}
       onMouseEnter={onMouseEnter}
     >
       {dir ? <span className="min-w-0 truncate">{dir}</span> : null}

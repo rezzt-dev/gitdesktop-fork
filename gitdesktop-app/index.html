@@ -7,21 +7,21 @@
     <title>gitdesktop</title>
     <style>
       html, body { margin: 0; min-height: 100%; }
-      html { background: #171717; }
+      html { background: #080808; }
       #startup-splash {
         position: fixed; inset: 0; z-index: 2147483647;
         display: grid; place-items: center;
-        background: #171717; color: #e9f3f0;
-        font-family: system-ui, sans-serif;
-        opacity: 1; transition: opacity 350ms ease-in-out;
+        background: #080808; color: #eeeeee;
+        font-family: "Space Grotesk Variable", system-ui, sans-serif;
+        opacity: 1; transition: opacity 180ms cubic-bezier(.33, 1, .68, 1);
       }
       #startup-splash.is-exiting { opacity: 0; pointer-events: none; }
       .startup-content { display: flex; flex-direction: column; align-items: center; gap: 18px; }
-      .startup-logo { width: 76px; height: 76px; animation: startup-arrive 650ms ease-out both; }
-      .startup-name { font-size: 16px; font-weight: 650; letter-spacing: .02em; animation: startup-arrive 750ms 100ms ease-out both; }
-      .startup-track { width: 132px; height: 3px; overflow: hidden; border-radius: 99px; background: #31504b; }
-      .startup-progress { width: 100%; height: 100%; border-radius: inherit; background: #4fe0c4; transform-origin: left; animation: startup-fill 1150ms ease-in-out both; }
-      @keyframes startup-arrive { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      .startup-logo { width: 56px; height: 56px; animation: startup-arrive 180ms cubic-bezier(.33, 1, .68, 1) both; }
+      .startup-name { font-size: 13px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; animation: startup-arrive 180ms 60ms cubic-bezier(.33, 1, .68, 1) both; }
+      .startup-track { width: 132px; height: 2px; overflow: hidden; background: rgb(238 238 238 / .1); }
+      .startup-progress { width: 100%; height: 100%; background: #eeeeee; transform-origin: left; animation: startup-fill 1150ms ease-in-out both; }
+      @keyframes startup-arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
       @keyframes startup-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
       @media (prefers-reduced-motion: reduce) {
         .startup-logo, .startup-name { animation: none; }

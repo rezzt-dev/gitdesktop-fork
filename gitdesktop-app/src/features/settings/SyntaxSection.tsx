@@ -472,7 +472,7 @@ export const SyntaxSection = withForm({
     return (
       <section className="space-y-6">
         <div>
-          <h2 className="text-sm font-medium">Syntax highlighting</h2>
+          <h2 className="screen-title pb-1">Syntax highlighting</h2>
           <p className="text-xs text-muted-foreground">
             Map a file extension to a language for diff highlighting — handy for
             wrapper extensions (a <code className="font-mono">.dbj</code> that's

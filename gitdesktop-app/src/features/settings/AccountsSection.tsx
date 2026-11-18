@@ -188,7 +188,7 @@ function GitHubAccounts() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium">GitHub</h2>
+        <h2 className="screen-title pb-1">GitHub</h2>
         <p className="text-xs text-muted-foreground">
           GitDesktop acts as whichever account is active in the GitHub CLI —
           pull requests, issues, and pushes all use it. Works with github.com
@@ -559,7 +559,7 @@ function GitLabAccount() {
   return (
     <section className="space-y-4 border-t pt-6">
       <div>
-        <h2 className="text-sm font-medium">GitLab</h2>
+        <h2 className="screen-title pb-1">GitLab</h2>
         <p className="text-xs text-muted-foreground">
           GitDesktop acts as whichever account is signed in to the GitLab CLI
           (glab) — merge requests, issues, and pushes all use it. Works with
@@ -796,7 +796,7 @@ function BitbucketAccount() {
   return (
     <section className="space-y-4 border-t pt-6">
       <div>
-        <h2 className="text-sm font-medium">Bitbucket</h2>
+        <h2 className="screen-title pb-1">Bitbucket</h2>
         <p className="text-xs text-muted-foreground">
           Connect Bitbucket Cloud with an Atlassian API token to browse and
           clone your repositories and read pull requests and Pipelines. Tokens

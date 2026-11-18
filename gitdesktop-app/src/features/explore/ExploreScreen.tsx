@@ -150,7 +150,7 @@ export function ExploreScreen() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center gap-2 border-b px-3 py-2">
+      <header className="flex h-11 shrink-0 items-center gap-2 border-b px-3">
         <Button
           variant="ghost"
           size="icon-sm"
@@ -159,7 +159,7 @@ export function ExploreScreen() {
         >
           <ArrowLeftIcon />
         </Button>
-        <span className="text-sm font-medium">Explore repositories</span>
+        <h1 className="section-title">Explore repositories</h1>
       </header>
 
       <div className="flex flex-wrap items-center gap-2 border-b px-3 py-2">

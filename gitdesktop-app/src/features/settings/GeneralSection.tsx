@@ -27,7 +27,7 @@ export const GeneralSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">General</h2>
+          <h2 className="screen-title pb-1">General</h2>
           <p className="text-xs text-muted-foreground">App-wide preferences.</p>
         </div>
         {/* Each toggle is grouped with its own description (tight spacing) so

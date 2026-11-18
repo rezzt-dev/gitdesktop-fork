@@ -71,7 +71,7 @@ export function AppearanceSection() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium">Appearance</h2>
+        <h2 className="screen-title pb-1">Appearance</h2>
         <p className="text-xs text-muted-foreground">
           How GitDesktop looks. Changes apply immediately.
         </p>

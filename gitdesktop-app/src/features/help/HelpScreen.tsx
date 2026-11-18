@@ -93,7 +93,7 @@ export function HelpScreen() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center gap-2 border-b px-3 py-2">
+      <header className="flex h-11 shrink-0 items-center gap-2 border-b px-3">
         <Button
           variant="ghost"
           size="icon-sm"
@@ -102,7 +102,7 @@ export function HelpScreen() {
         >
           <ArrowLeftIcon />
         </Button>
-        <span className="text-sm font-medium">User guide</span>
+        <h1 className="section-title">User guide</h1>
       </header>
 
       <div className="flex min-h-0 flex-1">
@@ -111,7 +111,7 @@ export function HelpScreen() {
           groups={railGroups}
           activeId={active.id}
           onSelect={setSectionId}
-          className="w-44 overflow-y-auto border-r p-2"
+          className="w-52 overflow-y-auto border-r p-2"
         />
         {/* key remounts the scroll area so a new section starts at the top.
             overflow-hidden contains the content's natural height (vendored Root

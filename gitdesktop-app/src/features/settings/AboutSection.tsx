@@ -241,7 +241,7 @@ export function AboutSection() {
   return (
     <section className="space-y-6">
       <div>
-        <h2 className="text-sm font-semibold">About</h2>
+        <h2 className="screen-title pb-1">About</h2>
         <p className="mt-1 text-xs text-muted-foreground">
           Your environment and the tools GitDesktop depends on. Several features
           quietly degrade when a CLI is missing, outdated, or signed out.

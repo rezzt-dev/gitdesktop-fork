@@ -250,7 +250,7 @@ export const McpServersSection = withForm({
       <section className="space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-sm font-medium">MCP servers</h2>
+            <h2 className="screen-title pb-1">MCP servers</h2>
             <p className="text-xs text-muted-foreground">
               Register Model Context Protocol servers that agent sessions can
               opt into. Each session passes{" "}

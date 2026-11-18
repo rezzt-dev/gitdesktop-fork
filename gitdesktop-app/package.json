@@ -28,6 +28,7 @@
     "@codemirror/language": "^6.12.4",
     "@codemirror/legacy-modes": "^6.5.4",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
     "@git-diff-view/core": "^0.1.7",
     "@git-diff-view/react": "^0.1.7",
     "@openrouter/ai-sdk-provider": "^2.10.0",

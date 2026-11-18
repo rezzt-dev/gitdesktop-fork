@@ -239,7 +239,7 @@ export const KeyboardSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">Keyboard</h2>
+          <h2 className="screen-title pb-1">Keyboard</h2>
           <p className="text-xs text-muted-foreground">
             Click a shortcut to record a new one — Esc cancels, Backspace
             unbinds. Unbound actions stay available in the command palette.

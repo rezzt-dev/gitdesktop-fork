@@ -81,7 +81,7 @@ export function GitIdentitySection() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium">Git identity</h2>
+        <h2 className="screen-title pb-1">Git identity</h2>
         <p className="text-xs text-muted-foreground">
           The author on new commits in every repository (a repository's own git
           config can override it). Saved to your global git config and applied
@@ -154,7 +154,7 @@ export function GitSection() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium">Default branch</h2>
+        <h2 className="screen-title pb-1">Default branch</h2>
         <p className="text-xs text-muted-foreground">
           The branch new repositories start on — used by GitDesktop and a
           command-line <span className="font-mono">git init</span> alike. Saved
@@ -221,7 +221,7 @@ export function LineEndingsSection() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium">Line endings</h2>
+        <h2 className="screen-title pb-1">Line endings</h2>
         <p className="text-xs text-muted-foreground">
           How git converts between CRLF and LF when you check out and commit
           files (core.autocrlf), saved to your global git config.
@@ -309,7 +309,7 @@ export function RepoIdentitySection({ repoPath }: { repoPath: string }) {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium">This repository's identity</h2>
+        <h2 className="screen-title pb-1">This repository's identity</h2>
         <p className="text-xs text-muted-foreground">
           Override the commit author for this repository only (git config
           --local). Leave both blank to use {globalLabel}.

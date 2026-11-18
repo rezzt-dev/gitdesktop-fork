@@ -113,7 +113,7 @@ export const TerminalSection = withForm({
     return (
       <section className="space-y-4">
         <div>
-          <h2 className="text-sm font-medium">Terminal</h2>
+          <h2 className="screen-title pb-1">Terminal</h2>
           <p className="text-xs text-muted-foreground">
             Used by "Open in terminal" in the repository menu. Installed
             terminals are detected automatically.

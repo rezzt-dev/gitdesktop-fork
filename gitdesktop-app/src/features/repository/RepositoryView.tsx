@@ -238,13 +238,13 @@ type RailId = (typeof RAIL_TABS)[number]["id"] | "more";
 const RAIL_IDS: RailId[] = ["changes", "history", "pulls", "more"];
 
 const RAIL_BUTTON_CLASS =
-  "relative flex h-9 w-full shrink-0 items-center justify-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset";
-// Active carries a shape cue as well as the tokens — the edge bar is the
-// vendored tab trigger's `after:` underline turned onto the rail's right edge.
+  "relative flex h-9 w-full shrink-0 items-center justify-center outline-none transition-colors focus-visible:outline-1 focus-visible:outline-ring focus-visible:-outline-offset-1";
+// Active carries a shape cue as well as the tokens: the Enki navigation rule,
+// a 3px ink line on the leading edge, the same mark as the section rail.
 const RAIL_ACTIVE_CLASS =
-  "bg-accent text-accent-foreground after:absolute after:inset-y-0 after:right-0 after:w-0.5 after:bg-foreground";
+  "bg-accent text-foreground after:absolute after:inset-y-0 after:left-0 after:w-[3px] after:bg-ink";
 const RAIL_IDLE_CLASS =
-  "text-muted-foreground hover:bg-muted/60 hover:text-foreground";
+  "text-muted-foreground hover:bg-ink/5 hover:text-foreground active:bg-ink/10";
 
 /**
  * The four tab affordances of the collapsed sidebar: the three primary tabs plus
@@ -864,7 +864,7 @@ export function RepositoryView() {
                         className={cn(
                           "relative inline-flex h-[calc(100%-1px)] shrink-0 items-center justify-center gap-1 rounded-none border border-transparent px-2 text-xs font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground data-popup-open:text-foreground dark:text-muted-foreground dark:hover:text-foreground [&_svg]:size-4 [&_svg]:shrink-0",
                           activeSecondary &&
-                            "bg-background text-foreground dark:border-input dark:bg-input/30 dark:text-foreground",
+                            "bg-ink font-semibold text-ink-on hover:text-ink-on dark:text-ink-on dark:hover:text-ink-on",
                         )}
                       />
                     }

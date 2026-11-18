@@ -184,7 +184,7 @@ export const AutomationsSection = withForm({
     return (
       <section className="space-y-3">
         <div>
-          <h2 className="text-sm font-medium">Automations</h2>
+          <h2 className="screen-title pb-1">Automations</h2>
           <p className="mt-1 text-xs text-muted-foreground">
             Run an AI action automatically when something happens. These
             defaults apply to every repository; a repository can override them
