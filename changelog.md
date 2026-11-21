@@ -31,8 +31,10 @@
 - corregir el recorte de las últimas filas de la lista de repositorios bajo la barra `Recent / Folders`
 - restaurar el foco de teclado visible en los raíles de secciones y sustituir el anillo azul del navegador por el contorno de tinta del tema
 - llevar el canal de números de los diffs oscuros a las superficies neutras del tema y ocultar el bot de revisiones con ia de gitlab
+- igualar el alto de la columna de repositorios de la bienvenida con el de la columna de acciones y hacer que la lista desplace dentro de ella
 
 #### ELIMINADO
+- eliminar `gitdesktop-app/src/features/repository/repo-list-sizes.ts`, `gitdesktop-app/src/features/welcome/recent-repo-list-sizes.ts` y su test `gitdesktop-app/scripts/repo-list-sizes.test.mjs`, ya sin uso
 - eliminar `.docs/guidelines/commit-guidelines.md` y `.docs/guidelines/pr-merge-release-guidelines.md`, sustituidas por las guias nuevas
 
 ### ENGLISH
@@ -64,6 +66,8 @@
 - fix the last repository list rows being clipped under the `Recent / Folders` toolbar
 - restore visible keyboard focus on the section rails and replace the browser's blue ring with the theme's ink outline
 - move the dark diff gutter onto the theme's neutral surfaces and hide the gitlab ai review bot
+- match the welcome repository column's height to the actions column and let the list scroll inside it
 
 #### REMOVED
+- remove `gitdesktop-app/src/features/repository/repo-list-sizes.ts`, `gitdesktop-app/src/features/welcome/recent-repo-list-sizes.ts` and their `gitdesktop-app/scripts/repo-list-sizes.test.mjs` test, now unused
 - remove `.docs/guidelines/commit-guidelines.md` and `.docs/guidelines/pr-merge-release-guidelines.md`, replaced by the new guides

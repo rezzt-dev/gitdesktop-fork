@@ -53,12 +53,6 @@ import {
 import { toastError } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import { useBatchSync } from "./batch-sync-store";
-import {
-  FILTER_INPUT_CLASS,
-  FILTER_ROW_CLASS,
-  LIST_VIEWPORT_CLASS,
-  TOOLBAR_CLASS,
-} from "./repo-list-sizes";
 import { useOpenRepoByPath } from "./useOpenRepoByPath";
 
 const RECENT_COUNT = 5;
@@ -124,11 +118,14 @@ function RecentRepoListView({
   onOpened,
   onAliasRepo,
   onRemoveRepo,
+  fill = false,
 }: {
   currentPath?: string | null;
   onOpened?: () => void;
   onAliasRepo: (repo: RecentRepo) => void;
   onRemoveRepo: (repo: RecentRepo) => void;
+  /** Grow to the parent's height instead of capping the list at its own maximum. */
+  fill?: boolean;
 }) {
   const settings = useSettings();
   const recents = settings.data?.recentRepos ?? [];
@@ -370,8 +367,8 @@ function RecentRepoListView({
   };
 
   return (
-    <div className="flex min-h-0 flex-col">
-      <div className={FILTER_ROW_CLASS}>
+    <div className={cn("flex min-h-0 flex-col", fill && "flex-1")}>
+      <div className="shrink-0 p-2">
         <Input
           // the filter is the keyboard entry point of this surface
           autoFocus
@@ -394,10 +391,16 @@ function RecentRepoListView({
           aria-activedescendant={
             highlightedPath ? repoOptionId(highlightedPath) : undefined
           }
-          className={FILTER_INPUT_CLASS}
+          className="h-7"
         />
       </div>
-      <ScrollArea className={LIST_VIEWPORT_CLASS} ref={listRef}>
+      <ScrollArea
+        className={cn(
+          "min-h-0",
+          fill ? "flex-1" : "**:data-[slot=scroll-area-viewport]:max-h-96",
+        )}
+        ref={listRef}
+      >
         <ContextMenu>
           <ContextMenuTrigger
             render={
@@ -731,9 +734,15 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
     (view === null && Boolean(library.data?.roots.length));
   return (
     // No height cap here: the list viewport and the folder tree each cap
-    // themselves, and a cap on this box would clip their last rows.
-    <div className="flex min-h-0 flex-col overflow-hidden">
-      <div className={TOOLBAR_CLASS}>
+    // themselves (or grow with `fill`), and a cap on this box would clip their
+    // last rows.
+    <div
+      className={cn(
+        "flex min-h-0 flex-col overflow-hidden",
+        props.fill && "flex-1",
+      )}
+    >
+      <div className="flex h-9 shrink-0 items-center gap-1 border-b px-2">
         <Button
           size="sm"
           variant="ghost"
@@ -790,6 +799,7 @@ export function RepoList(props: Parameters<typeof RecentRepoListView>[0]) {
         <FolderTree
           onOpened={props.onOpened}
           selectedPath={props.currentPath ?? undefined}
+          fill={props.fill}
         />
       ) : (
         <RecentRepoListView {...props} />

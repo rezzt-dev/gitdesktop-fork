@@ -21,6 +21,7 @@ import { suppressContextMenu } from "@/lib/context-menu";
 import { openWithDefault } from "@/lib/git/api";
 import { useRovingRows } from "@/lib/list-keyboard-nav";
 import { toastError } from "@/lib/toast";
+import { cn } from "@/lib/utils";
 import { type FolderEntry, folderRows } from "./model";
 import { changeLibrary, foldersKey, useFolderLibrary } from "./store";
 
@@ -29,11 +30,14 @@ export function FolderTree({
   selectedPath,
   onOpened,
   disabled = false,
+  fill = false,
 }: {
   onSelect?: (entry: FolderEntry) => void;
   selectedPath?: string;
   onOpened?: () => void;
   disabled?: boolean;
+  /** Grow to the parent's height instead of capping the tree at max-h-80. */
+  fill?: boolean;
 }) {
   const library = useFolderLibrary();
   const client = useQueryClient();
@@ -88,7 +92,7 @@ export function FolderTree({
     }
   }
   return (
-    <div className="flex min-h-0 flex-col">
+    <div className={cn("flex min-h-0 flex-col", fill && "flex-1")}>
       <div className="shrink-0 p-2">
         <Input
           aria-label="Filter folders and repositories"
@@ -115,7 +119,10 @@ export function FolderTree({
               role="tree"
               aria-label="Repository folders"
               aria-busy={library.isFetching || opening}
-              className="max-h-80 min-h-0 flex-1 overflow-auto overscroll-contain"
+              className={cn(
+                "min-h-0 flex-1 overflow-auto overscroll-contain",
+                !fill && "max-h-80",
+              )}
               onKeyDown={onRowKeyDown}
               onContextMenuCapture={(event) => {
                 const path = (event.target as HTMLElement)
